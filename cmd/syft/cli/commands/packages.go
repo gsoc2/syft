@@ -3,19 +3,17 @@ package commands
 import (
 	"fmt"
 
-	"github.com/hashicorp/go-multierror"
 	"github.com/spf13/cobra"
 
 	"github.com/anchore/clio"
 	"github.com/anchore/stereoscope/pkg/image"
-	"github.com/anchore/syft/cmd/syft/cli/eventloop"
 	"github.com/anchore/syft/cmd/syft/cli/options"
 	"github.com/anchore/syft/cmd/syft/internal/ui"
 	"github.com/anchore/syft/internal"
 	"github.com/anchore/syft/internal/bus"
 	"github.com/anchore/syft/internal/file"
 	"github.com/anchore/syft/internal/log"
-	"github.com/anchore/syft/syft/artifact"
+	"github.com/anchore/syft/syft"
 	"github.com/anchore/syft/syft/sbom"
 	"github.com/anchore/syft/syft/source"
 )
@@ -151,7 +149,7 @@ func getSource(opts *options.Catalog, userInput string, filters ...func(*source.
 	detection, err := source.Detect(
 		userInput,
 		source.DetectConfig{
-			DefaultImageSource: opts.DefaultImagePullSource,
+			DefaultImageSource: opts.Source.Image.DefaultPullSource,
 		},
 	)
 	if err != nil {
@@ -175,7 +173,7 @@ func getSource(opts *options.Catalog, userInput string, filters ...func(*source.
 
 	hashers, err := file.Hashers(opts.Source.File.Digests...)
 	if err != nil {
-		return nil, fmt.Errorf("invalid hash: %w", err)
+		return nil, fmt.Errorf("invalid hash algorithm: %w", err)
 	}
 
 	src, err := detection.NewSource(
@@ -190,7 +188,7 @@ func getSource(opts *options.Catalog, userInput string, filters ...func(*source.
 				Paths: opts.Exclusions,
 			},
 			DigestAlgorithms: hashers,
-			BasePath:         opts.BasePath,
+			BasePath:         opts.Source.BasePath,
 		},
 	)
 
@@ -205,51 +203,5 @@ func getSource(opts *options.Catalog, userInput string, filters ...func(*source.
 }
 
 func generateSBOM(id clio.Identification, src source.Source, opts *options.Catalog) (*sbom.SBOM, error) {
-	tasks, err := eventloop.Tasks(opts)
-	if err != nil {
-		return nil, err
-	}
-
-	s := sbom.SBOM{
-		Source: src.Describe(),
-		Descriptor: sbom.Descriptor{
-			Name:          id.Name,
-			Version:       id.Version,
-			Configuration: opts,
-		},
-	}
-
-	err = buildRelationships(&s, src, tasks)
-
-	return &s, err
-}
-
-func buildRelationships(s *sbom.SBOM, src source.Source, tasks []eventloop.Task) error {
-	var errs error
-
-	var relationships []<-chan artifact.Relationship
-	for _, task := range tasks {
-		c := make(chan artifact.Relationship)
-		relationships = append(relationships, c)
-		go func(task eventloop.Task) {
-			err := eventloop.RunTask(task, &s.Artifacts, src, c)
-			if err != nil {
-				errs = multierror.Append(errs, err)
-			}
-		}(task)
-	}
-
-	s.Relationships = append(s.Relationships, mergeRelationships(relationships...)...)
-
-	return errs
-}
-
-func mergeRelationships(cs ...<-chan artifact.Relationship) (relationships []artifact.Relationship) {
-	for _, c := range cs {
-		for n := range c {
-			relationships = append(relationships, n)
-		}
-	}
-
-	return relationships
+	return syft.CreateSBOM(src, opts.ToSBOMConfig(id))
 }

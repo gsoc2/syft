@@ -1,12 +1,12 @@
 package filemetadata
 
 import (
-	"github.com/wagoodman/go-partybus"
-	"github.com/wagoodman/go-progress"
+	"fmt"
 
-	"github.com/anchore/syft/internal/bus"
+	"github.com/dustin/go-humanize"
+
 	"github.com/anchore/syft/internal/log"
-	"github.com/anchore/syft/syft/event"
+	"github.com/anchore/syft/syft/event/monitor"
 	"github.com/anchore/syft/syft/file"
 )
 
@@ -27,45 +27,50 @@ func (i *Cataloger) Catalog(resolver file.Resolver, coordinates ...file.Coordina
 		locations = func() <-chan file.Location {
 			ch := make(chan file.Location)
 			go func() {
-				close(ch)
+				defer close(ch)
 				for _, c := range coordinates {
-					ch <- file.NewLocationFromCoordinates(c)
+					locs, err := resolver.FilesByPath(c.RealPath)
+					if err != nil {
+						log.Warn("unable to get file locations for path %q: %w", c.RealPath, err)
+						continue
+					}
+					for _, loc := range locs {
+						ch <- loc
+					}
 				}
 			}()
 			return ch
 		}()
 	}
 
-	stage, prog := metadataCatalogingProgress(int64(len(locations)))
+	prog := metadataCatalogingProgress(int64(len(locations)))
 	for location := range locations {
-		stage.Current = location.RealPath
+		prog.Increment()
+		prog.AtomicStage.Set(location.RealPath)
+
 		metadata, err := resolver.FileMetadataByLocation(location)
 		if err != nil {
 			return nil, err
 		}
 
 		results[location.Coordinates] = metadata
-		prog.Increment()
 	}
+
 	log.Debugf("file metadata cataloger processed %d files", prog.Current())
+
+	prog.AtomicStage.Set(fmt.Sprintf("%s locations", humanize.Comma(prog.Current())))
 	prog.SetCompleted()
+
 	return results, nil
 }
 
-func metadataCatalogingProgress(locations int64) (*progress.Stage, *progress.Manual) {
-	stage := &progress.Stage{}
-	prog := progress.NewManual(locations)
-
-	bus.Publish(partybus.Event{
-		Type: event.FileMetadataCatalogerStarted,
-		Value: struct {
-			progress.Stager
-			progress.Progressable
-		}{
-			Stager:       progress.Stager(stage),
-			Progressable: prog,
+func metadataCatalogingProgress(locations int64) *monitor.CatalogerTask {
+	info := monitor.GenericTask{
+		Title: monitor.Title{
+			Default: "File metadata",
 		},
-	})
+		ParentID: monitor.TopLevelCatalogingTaskID,
+	}
 
-	return stage, prog
+	return monitor.StartCatalogerTask(info, locations, "")
 }

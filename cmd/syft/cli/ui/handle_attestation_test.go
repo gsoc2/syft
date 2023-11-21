@@ -100,7 +100,7 @@ func TestHandler_handleAttestationStarted(t *testing.T) {
 				Height: 80,
 			}
 
-			models := handler.Handle(event)
+			models, _ := handler.Handle(event)
 			require.Len(t, models, 2)
 
 			t.Run("task line", func(t *testing.T) {

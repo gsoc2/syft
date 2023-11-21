@@ -468,9 +468,6 @@ output: "syft-table"
 # same as -q ; SYFT_QUIET env var
 quiet: false
 
-# same as --file; write output report to a file (default is to write to stdout)
-file: ""
-
 # enable/disable checking for application updates on startup
 # same as SYFT_CHECK_FOR_APP_UPDATE env var
 check-for-app-update: true
@@ -478,6 +475,9 @@ check-for-app-update: true
 # allows users to specify which image source should be used to generate the sbom
 # valid values are: registry, docker, podman
 default-image-pull-source: ""
+
+# maximum number of workers used to process the list of package catalogers in parallel
+parallelism: 1
 
 # a list of globs to exclude from scanning. same as --exclude ; for example:
 # exclude:
@@ -492,6 +492,10 @@ exclude-binary-overlap-by-ownership: true
 # os and/or architecture to use when referencing container images (e.g. "windows/armv6" or "arm64")
 # same as --platform; SYFT_PLATFORM env var
 platform: ""
+
+# the search space to look for file and package data (options: all-layers, squashed)
+# SYFT_SCOPE env var
+scope: "squashed"
 
 # set the list of package catalogers to use when generating the SBOM
 # default = empty (cataloger set determined automatically by the source type [image or file/directory])
@@ -532,7 +536,6 @@ platform: ""
 #   - sbom-cataloger
 #   - spm-cataloger
 catalogers:
-
 
 # all format configuration
 format:
@@ -586,9 +589,36 @@ format:
      pretty: false
 
 
+file:
+
+   metadata: 
+      # select which files should be captured by the file-metadata cataloger and included in the SBOM. 
+      # Options include:
+      #  - "all-files": capture all files from the search space
+      #  - "owned-files": capture only files owned by packages
+      #  - "unowned-files": capture only files not owned by packages
+      #  - "no-files", "": do not capture any files
+      # SYFT_FILE_METADATA_SELECTION env var
+      selection: "owned-files"
+
+      # the file digest algorithms to use when cataloging files (options: "md5", "sha1", "sha224", "sha256", "sha384", "sha512")
+      # SYFT_FILE_METADATA_DIGESTS env var
+      digests: ["sha256"]
+
+   # capture the contents of select files in the SBOM
+   content:
+      # skip searching a file entirely if it is above the given size (default = 1MB; unit = bytes)
+      # SYFT_FILE_CONTENT_SKIP_FILES_ABOVE_SIZE env var
+      skip-files-above-size: 1048576
+   
+      # file globs for the cataloger to match on
+      # SYFT_FILE_CONTENT_GLOBS env var
+      globs: []
+
+
 # cataloging packages is exposed through the packages and power-user subcommands
 package:
-
+   
   # search within archives that do contain a file index to search against (zip)
   # note: for now this only applies to the java package cataloger
   # SYFT_PACKAGE_SEARCH_INDEXED_ARCHIVES env var
@@ -600,14 +630,10 @@ package:
   # SYFT_PACKAGE_SEARCH_UNINDEXED_ARCHIVES env var
   search-unindexed-archives: false
 
-  cataloger:
-    # enable/disable cataloging of packages
-    # SYFT_PACKAGE_CATALOGER_ENABLED env var
-    enabled: true
+  # allows users to exclude synthetic binary packages from the sbom
+  # these packages are removed if an overlap with a non-synthetic package is found
+  exclude-binary-overlap-by-ownership: true
 
-    # the search space to look for packages (options: all-layers, squashed)
-    # same as -s ; SYFT_PACKAGE_CATALOGER_SCOPE env var
-    scope: "squashed"
 
 golang:
    # search for go package licences in the GOPATH of the system running Syft, note that this is outside the
@@ -656,42 +682,8 @@ python:
    # when given an arbitrary constraint will be used (even if that version may not be available/published).
    guess-unpinned-requirements: false
 
-file-contents:
-  cataloger:
-    # enable/disable cataloging of file contents
-    # SYFT_FILE_CONTENTS_CATALOGER_ENABLED env var
-    enabled: true
 
-    # the search space to look for file contents (options: all-layers, squashed)
-    # SYFT_FILE_CONTENTS_CATALOGER_SCOPE env var
-    scope: "squashed"
-
-  # skip searching a file entirely if it is above the given size (default = 1MB; unit = bytes)
-  # SYFT_FILE_CONTENTS_SKIP_FILES_ABOVE_SIZE env var
-  skip-files-above-size: 1048576
-
-  # file globs for the cataloger to match on
-  # SYFT_FILE_CONTENTS_GLOBS env var
-  globs: []
-
-file-metadata:
-  cataloger:
-    # enable/disable cataloging of file metadata
-    # SYFT_FILE_METADATA_CATALOGER_ENABLED env var
-    enabled: true
-
-    # the search space to look for file metadata (options: all-layers, squashed)
-    # SYFT_FILE_METADATA_CATALOGER_SCOPE env var
-    scope: "squashed"
-
-  # the file digest algorithms to use when cataloging files (options: "md5", "sha1", "sha224", "sha256", "sha384", "sha512")
-  # SYFT_FILE_METADATA_DIGESTS env var
-  digests: ["sha256"]
-
-# maximum number of workers used to process the list of package catalogers in parallel
-parallelism: 1
-
-# options that apply to all scan sources
+# configuration for the source that the SBOM is generated from (e.g. a file, directory, or container image)
 source:
   # alias name for the source
   # SYFT_SOURCE_NAME env var; --source-name flag
@@ -705,6 +697,7 @@ source:
   file:
     # the file digest algorithms to use on the scanned file (options: "md5", "sha1", "sha224", "sha256", "sha384", "sha512")
     digests: ["sha256"]
+
 
 # options when pulling directly from a registry via the "registry:" or "containerd:" scheme
 registry:

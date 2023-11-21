@@ -41,7 +41,9 @@ func runModel(t testing.TB, m tea.Model, iterations int, message tea.Msg, h ...*
 }
 
 func flatten(p tea.Msg) (msgs []tea.Msg) {
-	if reflect.TypeOf(p).Name() == "batchMsg" {
+	ty := reflect.TypeOf(p)
+	name := ty.Name()
+	if name == "BatchMsg" {
 		partials := extractBatchMessages(p)
 		for _, m := range partials {
 			msgs = append(msgs, flatten(m)...)

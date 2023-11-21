@@ -80,7 +80,7 @@ func TestHandler_handleFetchImage(t *testing.T) {
 				Height: 80,
 			}
 
-			models := handler.Handle(event)
+			models, _ := handler.Handle(event)
 			require.Len(t, models, 1)
 			model := models[0]
 

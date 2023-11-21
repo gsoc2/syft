@@ -18,6 +18,20 @@ type Title struct {
 }
 
 type GenericTask struct {
-	Title   Title
-	Context string
+
+	// required fields
+
+	Title Title
+
+	// optional format fields
+
+	HideOnSuccess      bool
+	HideStageOnSuccess bool
+
+	// optional fields
+
+	ID       string
+	Context  string
+	ParentID string
+	Hidden   bool
 }

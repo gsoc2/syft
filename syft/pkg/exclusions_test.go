@@ -1,18 +1,17 @@
-package cataloger
+package pkg
 
 import (
 	"testing"
 
 	"github.com/anchore/syft/syft/artifact"
-	"github.com/anchore/syft/syft/pkg"
 )
 
 func TestExclude(t *testing.T) {
-	packageA := pkg.Package{Name: "package-a", Type: pkg.ApkPkg}
-	packageB := pkg.Package{Name: "package-a", Type: pkg.PythonPkg}
-	packageC := pkg.Package{Name: "package-a", Type: pkg.BinaryPkg}
-	packageD := pkg.Package{Name: "package-d", Type: pkg.BinaryPkg}
-	for _, p := range []*pkg.Package{&packageA, &packageB, &packageC, &packageD} {
+	packageA := Package{Name: "package-a", Type: ApkPkg}
+	packageB := Package{Name: "package-a", Type: PythonPkg}
+	packageC := Package{Name: "package-a", Type: BinaryPkg}
+	packageD := Package{Name: "package-d", Type: BinaryPkg}
+	for _, p := range []*Package{&packageA, &packageB, &packageC, &packageD} {
 		p := p
 		p.SetID()
 	}
@@ -20,7 +19,7 @@ func TestExclude(t *testing.T) {
 	tests := []struct {
 		name          string
 		relationship  artifact.Relationship
-		packages      *pkg.Collection
+		packages      *Collection
 		shouldExclude bool
 	}{
 		{
@@ -30,7 +29,7 @@ func TestExclude(t *testing.T) {
 				From: packageA,
 				To:   packageB,
 			},
-			packages:      pkg.NewCollection(packageA, packageB),
+			packages:      NewCollection(packageA, packageB),
 			shouldExclude: false,
 		},
 		{
@@ -40,7 +39,7 @@ func TestExclude(t *testing.T) {
 				From: packageA,
 				To:   packageC,
 			},
-			packages:      pkg.NewCollection(packageA, packageC),
+			packages:      NewCollection(packageA, packageC),
 			shouldExclude: true,
 		},
 		{
@@ -50,7 +49,7 @@ func TestExclude(t *testing.T) {
 				From: packageB,
 				To:   packageC,
 			},
-			packages:      pkg.NewCollection(packageB, packageC),
+			packages:      NewCollection(packageB, packageC),
 			shouldExclude: false,
 		},
 		{
@@ -60,7 +59,7 @@ func TestExclude(t *testing.T) {
 				From: packageA,
 				To:   packageD,
 			},
-			packages:      pkg.NewCollection(packageA, packageD),
+			packages:      NewCollection(packageA, packageD),
 			shouldExclude: false,
 		},
 	}

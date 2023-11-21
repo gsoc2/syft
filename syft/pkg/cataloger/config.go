@@ -7,38 +7,18 @@ import (
 	"github.com/anchore/syft/syft/pkg/cataloger/python"
 )
 
-// TODO: these field naming vs helper function naming schemes are inconsistent.
 type Config struct {
-	Search                          SearchConfig
-	Golang                          golang.GoCatalogerOpts
-	LinuxKernel                     kernel.LinuxCatalogerConfig
-	Python                          python.CatalogerConfig
-	Java                            java.CatalogerOpts
-	Catalogers                      []string
-	Parallelism                     int
-	ExcludeBinaryOverlapByOwnership bool
+	Golang      golang.CatalogerConfig            `yaml:"golang" json:"golang" mapstructure:"golang"`
+	LinuxKernel kernel.LinuxKernelCatalogerConfig `yaml:"linux-kernel" json:"linux-kernel" mapstructure:"linux-kernel"`
+	Python      python.CatalogerConfig            `yaml:"python" json:"python" mapstructure:"python"`
+	Java        java.CatalogerConfig              `yaml:"java" json:"java" mapstructure:"java"`
 }
 
 func DefaultConfig() Config {
 	return Config{
-		Search:                          DefaultSearchConfig(),
-		Parallelism:                     1,
-		LinuxKernel:                     kernel.DefaultLinuxCatalogerConfig(),
-		Python:                          python.DefaultCatalogerConfig(),
-		Java:                            java.DefaultCatalogerOpts(),
-		ExcludeBinaryOverlapByOwnership: true,
-	}
-}
-
-// JavaConfig merges relevant config values from Config to return a java.Config struct.
-// Values like IncludeUnindexedArchives and IncludeIndexedArchives are used across catalogers
-// and are not specific to Java requiring this merge.
-func (c Config) JavaConfig() java.Config {
-	return java.Config{
-		SearchUnindexedArchives: c.Search.IncludeUnindexedArchives,
-		SearchIndexedArchives:   c.Search.IncludeIndexedArchives,
-		UseNetwork:              c.Java.UseNetwork,
-		MavenBaseURL:            c.Java.MavenURL,
-		MaxParentRecursiveDepth: c.Java.MaxParentRecursiveDepth,
+		Golang:      golang.DefaultCatalogerConfig(),
+		LinuxKernel: kernel.DefaultLinuxCatalogerConfig(),
+		Python:      python.DefaultCatalogerConfig(),
+		Java:        java.DefaultCatalogerConfig(),
 	}
 }

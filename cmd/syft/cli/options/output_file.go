@@ -13,13 +13,13 @@ var _ interface {
 
 // Deprecated: OutputFile supports the --file to write the SBOM output to
 type OutputFile struct {
-	Enabled bool   `yaml:"-" json:"-" mapstructure:"-"`
-	File    string `yaml:"file" json:"file" mapstructure:"file"`
+	Enabled    bool   `yaml:"-" json:"-" mapstructure:"-"`
+	LegacyFile string `yaml:"-" json:"-" mapstructure:"legacyFile"`
 }
 
 func (o *OutputFile) AddFlags(flags clio.FlagSet) {
 	if o.Enabled {
-		flags.StringVarP(&o.File, "file", "",
+		flags.StringVarP(&o.LegacyFile, "file", "",
 			"file to write the default report output to (default is STDOUT)")
 
 		if pfp, ok := flags.(fangs.PFlagSetProvider); ok {
@@ -33,12 +33,12 @@ func (o *OutputFile) PostLoad() error {
 	if !o.Enabled {
 		return nil
 	}
-	if o.File != "" {
-		file, err := expandFilePath(o.File)
+	if o.LegacyFile != "" {
+		file, err := expandFilePath(o.LegacyFile)
 		if err != nil {
 			return err
 		}
-		o.File = file
+		o.LegacyFile = file
 	}
 	return nil
 }
@@ -47,7 +47,7 @@ func (o *OutputFile) SBOMWriter(f sbom.FormatEncoder) (sbom.Writer, error) {
 	if !o.Enabled {
 		return nil, nil
 	}
-	writer, err := newSBOMMultiWriter(newSBOMWriterDescription(f, o.File))
+	writer, err := newSBOMMultiWriter(newSBOMWriterDescription(f, o.LegacyFile))
 	if err != nil {
 		return nil, err
 	}

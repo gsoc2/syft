@@ -2,42 +2,45 @@ package options
 
 import (
 	"fmt"
-	"sort"
 	"strings"
 
 	"github.com/iancoleman/strcase"
 	"github.com/mitchellh/go-homedir"
-	"github.com/scylladb/go-set/strset"
 
 	"github.com/anchore/clio"
 	"github.com/anchore/fangs"
+	intFile "github.com/anchore/syft/internal/file"
 	"github.com/anchore/syft/internal/log"
-	"github.com/anchore/syft/syft/pkg/cataloger"
-	golangCataloger "github.com/anchore/syft/syft/pkg/cataloger/golang"
-	javaCataloger "github.com/anchore/syft/syft/pkg/cataloger/java"
+	"github.com/anchore/syft/syft"
+	"github.com/anchore/syft/syft/cataloger"
+	pkgCataloger "github.com/anchore/syft/syft/pkg/cataloger"
+	"github.com/anchore/syft/syft/pkg/cataloger/golang"
+	"github.com/anchore/syft/syft/pkg/cataloger/java"
 	"github.com/anchore/syft/syft/pkg/cataloger/kernel"
-	pythonCataloger "github.com/anchore/syft/syft/pkg/cataloger/python"
+	"github.com/anchore/syft/syft/pkg/cataloger/python"
 	"github.com/anchore/syft/syft/source"
 )
 
 type Catalog struct {
-	Catalogers                      []string     `yaml:"catalogers" json:"catalogers" mapstructure:"catalogers"`
-	Package                         pkg          `yaml:"package" json:"package" mapstructure:"package"`
-	Golang                          golang       `yaml:"golang" json:"golang" mapstructure:"golang"`
-	Java                            java         `yaml:"java" json:"java" mapstructure:"java"`
-	LinuxKernel                     linuxKernel  `yaml:"linux-kernel" json:"linux-kernel" mapstructure:"linux-kernel"`
-	Python                          python       `yaml:"python" json:"python" mapstructure:"python"`
-	FileMetadata                    fileMetadata `yaml:"file-metadata" json:"file-metadata" mapstructure:"file-metadata"`
-	FileContents                    fileContents `yaml:"file-contents" json:"file-contents" mapstructure:"file-contents"`
-	Registry                        registry     `yaml:"registry" json:"registry" mapstructure:"registry"`
-	Exclusions                      []string     `yaml:"exclude" json:"exclude" mapstructure:"exclude"`
-	Platform                        string       `yaml:"platform" json:"platform" mapstructure:"platform"`
-	Name                            string       `yaml:"name" json:"name" mapstructure:"name"`
-	Source                          sourceCfg    `yaml:"source" json:"source" mapstructure:"source"`
-	Parallelism                     int          `yaml:"parallelism" json:"parallelism" mapstructure:"parallelism"`                                                                         // the number of catalog workers to run in parallel
-	DefaultImagePullSource          string       `yaml:"default-image-pull-source" json:"default-image-pull-source" mapstructure:"default-image-pull-source"`                               // specify default image pull source
-	BasePath                        string       `yaml:"base-path" json:"base-path" mapstructure:"base-path"`                                                                               // specify base path for all file paths
-	ExcludeBinaryOverlapByOwnership bool         `yaml:"exclude-binary-overlap-by-ownership" json:"exclude-binary-overlap-by-ownership" mapstructure:"exclude-binary-overlap-by-ownership"` // exclude synthetic binary packages owned by os package files
+	// high-level cataloger configuration
+	Catalogers  []string `yaml:"catalogers" json:"catalogers" mapstructure:"catalogers"`
+	Package     pkg      `yaml:"package" json:"package" mapstructure:"package"`
+	File        file     `yaml:"file" json:"file" mapstructure:"file"`
+	Scope       string   `yaml:"scope" json:"scope" mapstructure:"scope"`
+	Parallelism int      `yaml:"parallelism" json:"parallelism" mapstructure:"parallelism"` // the number of catalog workers to run in parallel
+
+	// ecosystem-specific cataloger configuration
+	Golang      golangConfig `yaml:"golang" json:"golang" mapstructure:"golang"`
+	Java        javaConfig   `yaml:"java" json:"java" mapstructure:"java"`
+	LinuxKernel linuxKernel  `yaml:"linux-kernel" json:"linux-kernel" mapstructure:"linux-kernel"`
+	Python      pythonConfig `yaml:"python" json:"python" mapstructure:"python"`
+
+	// configuration for the source (the subject being analyzed)
+	Registry   registry     `yaml:"registry" json:"registry" mapstructure:"registry"`
+	Platform   string       `yaml:"platform" json:"platform" mapstructure:"platform"`
+	Name       string       `yaml:"name" json:"name" mapstructure:"name"` // deprecated
+	Source     sourceConfig `yaml:"source" json:"source" mapstructure:"source"`
+	Exclusions []string     `yaml:"exclude" json:"exclude" mapstructure:"exclude"`
 }
 
 var _ interface {
@@ -47,13 +50,75 @@ var _ interface {
 
 func DefaultCatalog() Catalog {
 	return Catalog{
-		Package:                         defaultPkg(),
-		LinuxKernel:                     defaultLinuxKernel(),
-		FileMetadata:                    defaultFileMetadata(),
-		FileContents:                    defaultFileContents(),
-		Source:                          defaultSourceCfg(),
-		Parallelism:                     1,
-		ExcludeBinaryOverlapByOwnership: true,
+		Scope:       source.SquashedScope.String(),
+		Package:     defaultPkg(),
+		LinuxKernel: defaultLinuxKernel(),
+		File:        defaultFile(),
+		Source:      defaultSourceCfg(),
+		Parallelism: 1,
+	}
+}
+
+func (cfg Catalog) ToCatalogerConfig() cataloger.Config {
+	hashers, err := intFile.Hashers(cfg.File.Metadata.Digests...)
+	if err != nil {
+		log.WithFields("error", err).Warn("unable to configure file hashers")
+	}
+
+	return cataloger.Config{
+		Search: cataloger.SearchConfig{
+			Scope: source.ParseScope(cfg.Scope),
+		},
+		Relationships: cataloger.RelationshipsConfig{
+			FileOwnership:        true,  // TODO: tie to app config
+			FileOwnershipOverlap: false, // TODO: tie to app config
+			ExcludeBinaryPackagesWithFileOwnershipOverlap: cfg.Package.ExcludeBinaryOverlapByOwnership,
+		},
+		DataGeneration: cataloger.DataGenerationConfig{
+			GenerateCPEs:          true, // TODO: tie to app config
+			GuessLanguageFromPURL: true, // TODO: tie to app config
+		},
+		Files: cataloger.FileCatalogingConfig{
+			Selection: cfg.File.Metadata.Selection,
+			Hashers:   hashers,
+		},
+		// TODO...
+		//Catalogers:  cfg.Catalogers,
+	}
+}
+
+func (cfg Catalog) ToSBOMConfig(id clio.Identification) *syft.SBOMConfig {
+	return syft.DefaultSBOMConfig().
+		WithTool(id.Name, id.Version).
+		WithParallelism(cfg.Parallelism).
+		WithCatalogerConfig(cfg.ToCatalogerConfig()).
+		WithPackagesConfig(cfg.ToPackagesConfig()).
+		WithCatalogerSelectionBasedOnSource(true).
+		WithCatalogerSelection(cfg.Catalogers...)
+}
+
+func (cfg Catalog) ToPackagesConfig() pkgCataloger.Config {
+	archiveSearch := cataloger.ArchiveSearchConfig{
+		IncludeIndexedArchives:   cfg.Package.SearchIndexedArchives,
+		IncludeUnindexedArchives: cfg.Package.SearchUnindexedArchives,
+	}
+	return pkgCataloger.Config{
+		Golang: golang.DefaultCatalogerConfig().
+			WithSearchLocalModCacheLicenses(cfg.Golang.SearchLocalModCacheLicenses).
+			WithLocalModCacheDir(cfg.Golang.LocalModCacheDir).
+			WithSearchRemoteLicenses(cfg.Golang.SearchRemoteLicenses).
+			WithProxy(cfg.Golang.Proxy).
+			WithNoProxy(cfg.Golang.NoProxy),
+		LinuxKernel: kernel.LinuxKernelCatalogerConfig{
+			CatalogModules: cfg.LinuxKernel.CatalogModules,
+		},
+		Python: python.CatalogerConfig{
+			GuessUnpinnedRequirements: cfg.Python.GuessUnpinnedRequirements,
+		},
+		Java: java.DefaultCatalogerConfig().
+			WithUseNetwork(cfg.Java.UseNetwork).
+			WithMavenCentralURL(cfg.Java.MavenURL).
+			WithArchiveTraversal(archiveSearch, cfg.Java.MaxParentRecursiveDepth),
 	}
 }
 
@@ -62,7 +127,7 @@ func (cfg *Catalog) AddFlags(flags clio.FlagSet) {
 	for _, scope := range source.AllScopes {
 		validScopeValues = append(validScopeValues, strcase.ToDelimited(string(scope), '-'))
 	}
-	flags.StringVarP(&cfg.Package.Cataloger.Scope, "scope", "s",
+	flags.StringVarP(&cfg.Scope, "scope", "s",
 		fmt.Sprintf("selection of layers to catalog, options=%v", validScopeValues))
 
 	flags.StringVarP(&cfg.Platform, "platform", "",
@@ -88,7 +153,7 @@ func (cfg *Catalog) AddFlags(flags clio.FlagSet) {
 	flags.StringVarP(&cfg.Source.Version, "source-version", "",
 		"set the version of the target being analyzed")
 
-	flags.StringVarP(&cfg.BasePath, "base-path", "",
+	flags.StringVarP(&cfg.Source.BasePath, "base-path", "",
 		"base directory for scanning, no links will be followed above this directory, and all paths will be reported relative to this directory")
 }
 
@@ -100,12 +165,7 @@ func (cfg *Catalog) PostLoad() error {
 			catalogers = append(catalogers, strings.TrimSpace(f))
 		}
 	}
-	sort.Strings(catalogers)
 	cfg.Catalogers = catalogers
-
-	if err := checkDefaultSourceValues(cfg.DefaultImagePullSource); err != nil {
-		return err
-	}
 
 	if cfg.Name != "" {
 		log.Warnf("name parameter is deprecated. please use: source-name. name will be removed in a future version")
@@ -114,45 +174,9 @@ func (cfg *Catalog) PostLoad() error {
 		}
 	}
 
-	return nil
-}
-
-func (cfg Catalog) ToCatalogerConfig() cataloger.Config {
-	return cataloger.Config{
-		Search: cataloger.SearchConfig{
-			IncludeIndexedArchives:   cfg.Package.SearchIndexedArchives,
-			IncludeUnindexedArchives: cfg.Package.SearchUnindexedArchives,
-			Scope:                    cfg.Package.Cataloger.GetScope(),
-		},
-		Catalogers:  cfg.Catalogers,
-		Parallelism: cfg.Parallelism,
-		Golang: golangCataloger.NewGoCatalogerOpts().
-			WithSearchLocalModCacheLicenses(cfg.Golang.SearchLocalModCacheLicenses).
-			WithLocalModCacheDir(cfg.Golang.LocalModCacheDir).
-			WithSearchRemoteLicenses(cfg.Golang.SearchRemoteLicenses).
-			WithProxy(cfg.Golang.Proxy).
-			WithNoProxy(cfg.Golang.NoProxy),
-		LinuxKernel: kernel.LinuxCatalogerConfig{
-			CatalogModules: cfg.LinuxKernel.CatalogModules,
-		},
-		Java: javaCataloger.DefaultCatalogerOpts().
-			WithUseNetwork(cfg.Java.UseNetwork).
-			WithMavenURL(cfg.Java.MavenURL).
-			WithMaxParentRecursiveDepth(cfg.Java.MaxParentRecursiveDepth),
-		Python: pythonCataloger.CatalogerConfig{
-			GuessUnpinnedRequirements: cfg.Python.GuessUnpinnedRequirements,
-		},
-		ExcludeBinaryOverlapByOwnership: cfg.ExcludeBinaryOverlapByOwnership,
-	}
-}
-
-var validDefaultSourceValues = []string{"registry", "docker", "podman", ""}
-
-func checkDefaultSourceValues(source string) error {
-	validValues := strset.New(validDefaultSourceValues...)
-	if !validValues.Has(source) {
-		validValuesString := strings.Join(validDefaultSourceValues, ", ")
-		return fmt.Errorf("%s is not a valid default source; please use one of the following: %s''", source, validValuesString)
+	s := source.ParseScope(cfg.Scope)
+	if s == source.UnknownScope {
+		return fmt.Errorf("bad scope value %q", cfg.Scope)
 	}
 
 	return nil

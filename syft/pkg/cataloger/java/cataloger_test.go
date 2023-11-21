@@ -3,6 +3,7 @@ package java
 import (
 	"testing"
 
+	"github.com/anchore/syft/syft/cataloger"
 	"github.com/anchore/syft/syft/pkg/cataloger/internal/pkgtest"
 )
 
@@ -54,10 +55,16 @@ func Test_ArchiveCataloger_Globs(t *testing.T) {
 			pkgtest.NewCatalogTester().
 				FromDirectory(t, test.fixture).
 				ExpectsResolverContentQueries(test.expected).
-				TestCataloger(t, NewArchiveCataloger(Config{
-					SearchUnindexedArchives: true,
-					SearchIndexedArchives:   true,
-				}))
+				TestCataloger(t,
+					NewArchiveCataloger(
+						CatalogerConfig{
+							ArchiveSearchConfig: cataloger.ArchiveSearchConfig{
+								IncludeIndexedArchives:   true,
+								IncludeUnindexedArchives: true,
+							},
+						},
+					),
+				)
 		})
 	}
 }
