@@ -10,31 +10,31 @@ import (
 
 	"github.com/anchore/syft/internal/log"
 	"github.com/anchore/syft/syft/artifact"
-	"github.com/anchore/syft/syft/cataloger"
+	"github.com/anchore/syft/syft/cataloging"
+	"github.com/anchore/syft/syft/cataloging/pkgcataloging"
 	"github.com/anchore/syft/syft/event/monitor"
 	"github.com/anchore/syft/syft/file"
 	"github.com/anchore/syft/syft/pkg"
-	pkgCataloger "github.com/anchore/syft/syft/pkg/cataloger"
 	"github.com/anchore/syft/syft/pkg/cataloger/common/cpe"
 )
 
-type packageTaskFactory func(cfg cataloger.Config, pkgCfg pkgCataloger.Config) Task
+type packageTaskFactory func(cfg cataloging.Config, pkgCfg pkgcataloging.Config) Task
 
 type PackageTaskFactories []packageTaskFactory
 
-func newPackageTaskFactory(catalogerFactory func(cataloger.Config, pkgCataloger.Config) pkg.Cataloger, tags ...string) packageTaskFactory {
-	return func(cfg cataloger.Config, pkgCfg pkgCataloger.Config) Task {
+func newPackageTaskFactory(catalogerFactory func(cataloging.Config, pkgcataloging.Config) pkg.Cataloger, tags ...string) packageTaskFactory {
+	return func(cfg cataloging.Config, pkgCfg pkgcataloging.Config) Task {
 		return NewPackageTask(cfg, catalogerFactory(cfg, pkgCfg), tags...)
 	}
 }
 
 func newSimplePackageTaskFactory(catalogerFactory func() pkg.Cataloger, tags ...string) packageTaskFactory {
-	return func(cfg cataloger.Config, pkgCfg pkgCataloger.Config) Task {
+	return func(cfg cataloging.Config, pkgCfg pkgcataloging.Config) Task {
 		return NewPackageTask(cfg, catalogerFactory(), tags...)
 	}
 }
 
-func (f PackageTaskFactories) Tasks(cfg cataloger.Config, pkgCfg pkgCataloger.Config) ([]Task, error) {
+func (f PackageTaskFactories) Tasks(cfg cataloging.Config, pkgCfg pkgcataloging.Config) ([]Task, error) {
 	var allTasks []Task
 	taskNames := strset.New()
 	duplicateTaskNames := strset.New()
@@ -64,7 +64,7 @@ func (f PackageTaskFactories) Tasks(cfg cataloger.Config, pkgCfg pkgCataloger.Co
 // NewPackageTask creates a Task function for a generic pkg.Cataloger, honoring the common configuration options.
 //
 //nolint:funlen
-func NewPackageTask(cfg cataloger.Config, c pkg.Cataloger, tags ...string) Task {
+func NewPackageTask(cfg cataloging.Config, c pkg.Cataloger, tags ...string) Task {
 	fn := func(resolver file.Resolver, sbom SBOMBuilder) error {
 		log.WithFields("name", c.Name()).Trace("starting package cataloger")
 

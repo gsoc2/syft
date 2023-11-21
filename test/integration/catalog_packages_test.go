@@ -33,7 +33,7 @@ func BenchmarkImagePackageCatalogers(b *testing.B) {
 	})
 
 	// build the SBOM
-	s, err := syft.CreateSBOM(theSource, syft.DefaultSBOMConfig())
+	s, err := syft.CreateSBOM(theSource, syft.DefaultCreateSBOMConfig())
 
 	// did it work?
 	require.NoError(b, err)

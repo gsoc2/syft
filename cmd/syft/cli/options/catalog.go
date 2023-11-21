@@ -12,8 +12,9 @@ import (
 	intFile "github.com/anchore/syft/internal/file"
 	"github.com/anchore/syft/internal/log"
 	"github.com/anchore/syft/syft"
-	"github.com/anchore/syft/syft/cataloger"
-	pkgCataloger "github.com/anchore/syft/syft/pkg/cataloger"
+	"github.com/anchore/syft/syft/cataloging"
+	"github.com/anchore/syft/syft/cataloging/filecataloging"
+	"github.com/anchore/syft/syft/cataloging/pkgcataloging"
 	"github.com/anchore/syft/syft/pkg/cataloger/golang"
 	"github.com/anchore/syft/syft/pkg/cataloger/java"
 	"github.com/anchore/syft/syft/pkg/cataloger/kernel"
@@ -25,7 +26,7 @@ type Catalog struct {
 	// high-level cataloger configuration
 	Catalogers  []string `yaml:"catalogers" json:"catalogers" mapstructure:"catalogers"`
 	Package     pkg      `yaml:"package" json:"package" mapstructure:"package"`
-	File        file     `yaml:"file" json:"file" mapstructure:"file"`
+	File        fileCfg  `yaml:"file" json:"file" mapstructure:"file"`
 	Scope       string   `yaml:"scope" json:"scope" mapstructure:"scope"`
 	Parallelism int      `yaml:"parallelism" json:"parallelism" mapstructure:"parallelism"` // the number of catalog workers to run in parallel
 
@@ -59,50 +60,52 @@ func DefaultCatalog() Catalog {
 	}
 }
 
-func (cfg Catalog) ToCatalogerConfig() cataloger.Config {
+func (cfg Catalog) ToCatalogerConfig() cataloging.Config {
+	return cataloging.Config{
+		Search: cataloging.SearchConfig{
+			Scope: source.ParseScope(cfg.Scope),
+		},
+		Relationships: cataloging.RelationshipsConfig{
+			FileOwnership:        true,  // TODO: tie to app config
+			FileOwnershipOverlap: false, // TODO: tie to app config
+			ExcludeBinaryPackagesWithFileOwnershipOverlap: cfg.Package.ExcludeBinaryOverlapByOwnership,
+		},
+		DataGeneration: cataloging.DataGenerationConfig{
+			GenerateCPEs:          true, // TODO: tie to app config
+			GuessLanguageFromPURL: true, // TODO: tie to app config
+		},
+	}
+}
+
+func (cfg Catalog) ToSBOMConfig(id clio.Identification) *syft.CreateSBOMConfig {
+	return syft.DefaultCreateSBOMConfig().
+		WithTool(id.Name, id.Version).
+		WithParallelism(cfg.Parallelism).
+		WithCatalogingConfig(cfg.ToCatalogerConfig()).
+		WithPackagesConfig(cfg.ToPackagesConfig()).
+		WithFilesConfig(cfg.ToFilesConfig()).
+		WithCatalogerSelectionBasedOnSource(true).
+		WithCatalogerSelection(cfg.Catalogers...)
+}
+
+func (cfg Catalog) ToFilesConfig() filecataloging.Config {
 	hashers, err := intFile.Hashers(cfg.File.Metadata.Digests...)
 	if err != nil {
 		log.WithFields("error", err).Warn("unable to configure file hashers")
 	}
 
-	return cataloger.Config{
-		Search: cataloger.SearchConfig{
-			Scope: source.ParseScope(cfg.Scope),
-		},
-		Relationships: cataloger.RelationshipsConfig{
-			FileOwnership:        true,  // TODO: tie to app config
-			FileOwnershipOverlap: false, // TODO: tie to app config
-			ExcludeBinaryPackagesWithFileOwnershipOverlap: cfg.Package.ExcludeBinaryOverlapByOwnership,
-		},
-		DataGeneration: cataloger.DataGenerationConfig{
-			GenerateCPEs:          true, // TODO: tie to app config
-			GuessLanguageFromPURL: true, // TODO: tie to app config
-		},
-		Files: cataloger.FileCatalogingConfig{
-			Selection: cfg.File.Metadata.Selection,
-			Hashers:   hashers,
-		},
-		// TODO...
-		//Catalogers:  cfg.Catalogers,
+	return filecataloging.Config{
+		Selection: cfg.File.Metadata.Selection,
+		Hashers:   hashers,
 	}
 }
 
-func (cfg Catalog) ToSBOMConfig(id clio.Identification) *syft.SBOMConfig {
-	return syft.DefaultSBOMConfig().
-		WithTool(id.Name, id.Version).
-		WithParallelism(cfg.Parallelism).
-		WithCatalogerConfig(cfg.ToCatalogerConfig()).
-		WithPackagesConfig(cfg.ToPackagesConfig()).
-		WithCatalogerSelectionBasedOnSource(true).
-		WithCatalogerSelection(cfg.Catalogers...)
-}
-
-func (cfg Catalog) ToPackagesConfig() pkgCataloger.Config {
-	archiveSearch := cataloger.ArchiveSearchConfig{
+func (cfg Catalog) ToPackagesConfig() pkgcataloging.Config {
+	archiveSearch := cataloging.ArchiveSearchConfig{
 		IncludeIndexedArchives:   cfg.Package.SearchIndexedArchives,
 		IncludeUnindexedArchives: cfg.Package.SearchUnindexedArchives,
 	}
-	return pkgCataloger.Config{
+	return pkgcataloging.Config{
 		Golang: golang.DefaultCatalogerConfig().
 			WithSearchLocalModCacheLicenses(cfg.Golang.SearchLocalModCacheLicenses).
 			WithLocalModCacheDir(cfg.Golang.LocalModCacheDir).

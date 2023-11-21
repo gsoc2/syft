@@ -4,17 +4,17 @@ import (
 	"fmt"
 
 	intFile "github.com/anchore/syft/internal/file"
-	"github.com/anchore/syft/syft/cataloger"
+	"github.com/anchore/syft/syft/file"
 )
 
-type file struct {
+type fileCfg struct {
 	Metadata fileMetadata `yaml:"metadata" json:"metadata" mapstructure:"metadata"`
 	Content  fileContent  `yaml:"content" json:"content" mapstructure:"content"`
 }
 
 type fileMetadata struct {
-	Selection cataloger.FileCatalogingSelection `yaml:"selection" json:"selection" mapstructure:"selection"`
-	Digests   []string                          `yaml:"digests" json:"digests" mapstructure:"digests"`
+	Selection file.Selection `yaml:"selection" json:"selection" mapstructure:"selection"`
+	Digests   []string       `yaml:"digests" json:"digests" mapstructure:"digests"`
 }
 
 type fileContent struct {
@@ -22,10 +22,10 @@ type fileContent struct {
 	Globs              []string `yaml:"globs" json:"globs" mapstructure:"globs"`
 }
 
-func defaultFile() file {
-	return file{
+func defaultFile() fileCfg {
+	return fileCfg{
 		Metadata: fileMetadata{
-			Selection: cataloger.OwnedFilesSelection,
+			Selection: file.OwnedFilesSelection,
 			Digests:   []string{"sha1", "sha256"},
 		},
 		Content: fileContent{
@@ -34,9 +34,9 @@ func defaultFile() file {
 	}
 }
 
-func (c *file) PostLoad() error {
+func (c *fileCfg) PostLoad() error {
 	switch c.Metadata.Selection {
-	case cataloger.NoFilesSelection, cataloger.OwnedFilesSelection, cataloger.AllFilesSelection:
+	case file.NoFilesSelection, file.OwnedFilesSelection, file.AllFilesSelection:
 		return nil
 	}
 	return fmt.Errorf("invalid file metadata selection: %q", c.Metadata.Selection)

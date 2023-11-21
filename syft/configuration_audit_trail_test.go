@@ -6,8 +6,8 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/anchore/syft/syft/cataloger"
-	pkgCataloger "github.com/anchore/syft/syft/pkg/cataloger"
+	"github.com/anchore/syft/syft/cataloging"
+	"github.com/anchore/syft/syft/cataloging/pkgcataloging"
 	"github.com/anchore/syft/syft/pkg/cataloger/golang"
 	"github.com/anchore/syft/syft/pkg/cataloger/java"
 	"github.com/anchore/syft/syft/pkg/cataloger/kernel"
@@ -15,27 +15,24 @@ import (
 	"github.com/anchore/syft/syft/source"
 )
 
-func Test_apiConfiguration_MarshalJSON(t *testing.T) {
+func Test_configurationAuditTrail_MarshalJSON(t *testing.T) {
 
 	tests := []struct {
 		name string
-		cfg  apiConfiguration
+		cfg  configurationAuditTrail
 		want string
 	}{
 		{
 			name: "gocase",
-			cfg: apiConfiguration{
-				CatalogerConfig: &cataloger.Config{
-					Search: cataloger.SearchConfig{
+			cfg: configurationAuditTrail{
+				CatalogerConfig: &cataloging.Config{
+					Search: cataloging.SearchConfig{
 						Scope: source.SquashedScope,
 					},
-					Files: cataloger.FileCatalogingConfig{
-						Selection: cataloger.AllFilesSelection,
-					},
-					Relationships:  cataloger.RelationshipsConfig{},
-					DataGeneration: cataloger.DataGenerationConfig{},
+					Relationships:  cataloging.RelationshipsConfig{},
+					DataGeneration: cataloging.DataGenerationConfig{},
 				},
-				PackagesConfig: &pkgCataloger.Config{
+				PackagesConfig: &pkgcataloging.Config{
 					Golang:      golang.CatalogerConfig{},
 					LinuxKernel: kernel.LinuxKernelCatalogerConfig{},
 					Python:      python.CatalogerConfig{},
@@ -53,10 +50,6 @@ func Test_apiConfiguration_MarshalJSON(t *testing.T) {
 			//    "data-generation": {
 			//      "generate-cpes": false,
 			//      "guess-language-from-purl": false
-			//    },
-			//    "files": {
-			//      "hashers": null,
-			//      "selection": "all-files"
 			//    },
 			//    "relationships": {
 			//      "exclude-binary-packages-with-file-ownership-overlap": false,
@@ -96,7 +89,7 @@ func Test_apiConfiguration_MarshalJSON(t *testing.T) {
 			//    }
 			//  }
 			//}
-			want: `{"catalog":{"data-generation":{"generate-cpes":false,"guess-language-from-purl":false},"files":{"hashers":null,"selection":"all-files"},"relationships":{"exclude-binary-packages-with-file-ownership-overlap":false,"file-ownership":false,"file-ownership-overlap":false},"search":{"scope":"Squashed"}},"catalogers":{"requested":["requested"],"used":["used"]},"packages":{"golang":{"local-mod-cache-dir":"","search-local-mod-cache-licenses":false,"search-remote-licenses":false},"java":{"include-indexed-archives":false,"include-unindexed-archives":false,"maven-base-url":"","max-parent-recursive-depth":0,"use-network":false},"linux-kernel":{"catalog-modules":false},"python":{"guess-unpinned-requirements":false}}}`,
+			want: `{"catalog":{"data-generation":{"generate-cpes":false,"guess-language-from-purl":false},"relationships":{"exclude-binary-packages-with-file-ownership-overlap":false,"file-ownership":false,"file-ownership-overlap":false},"search":{"scope":"Squashed"}},"catalogers":{"requested":["requested"],"used":["used"]},"packages":{"golang":{"local-mod-cache-dir":"","search-local-mod-cache-licenses":false,"search-remote-licenses":false},"java":{"include-indexed-archives":false,"include-unindexed-archives":false,"maven-base-url":"","max-parent-recursive-depth":0,"use-network":false},"linux-kernel":{"catalog-modules":false},"python":{"guess-unpinned-requirements":false}}}`,
 		},
 	}
 	for _, tt := range tests {

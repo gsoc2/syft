@@ -1,4 +1,4 @@
-package cataloger
+package pkgcataloging
 
 import (
 	"github.com/anchore/syft/syft/pkg/cataloger/golang"

@@ -1,9 +1,9 @@
 package task
 
 import (
-	"github.com/anchore/syft/syft/cataloger"
+	"github.com/anchore/syft/syft/cataloging"
+	"github.com/anchore/syft/syft/cataloging/pkgcataloging"
 	"github.com/anchore/syft/syft/pkg"
-	pkgCataloger "github.com/anchore/syft/syft/pkg/cataloger"
 	"github.com/anchore/syft/syft/pkg/cataloger/alpine"
 	"github.com/anchore/syft/syft/pkg/cataloger/arch"
 	"github.com/anchore/syft/syft/pkg/cataloger/binary"
@@ -58,7 +58,7 @@ func DefaultPackageTaskFactories() PackageTaskFactories {
 		newSimplePackageTaskFactory(erlang.NewRebarLockCataloger, DeclaredTag, DirectoryTag, LanguageTag, "erlang"),
 		newSimplePackageTaskFactory(haskell.NewHackageCataloger, DeclaredTag, DirectoryTag, LanguageTag, "haskell", "hackage", "cabal"),
 		newPackageTaskFactory(
-			func(cfg cataloger.Config, pkgCfg pkgCataloger.Config) pkg.Cataloger {
+			func(cfg cataloging.Config, pkgCfg pkgcataloging.Config) pkg.Cataloger {
 				return golang.NewGoModuleFileCataloger(pkgCfg.Golang)
 			},
 			DeclaredTag, DirectoryTag, LanguageTag, "go", "golang", "gomod",
@@ -68,7 +68,7 @@ func DefaultPackageTaskFactories() PackageTaskFactories {
 		newSimplePackageTaskFactory(javascript.NewLockCataloger, DeclaredTag, DirectoryTag, LanguageTag, "javascript", "node", "npm"),
 		newSimplePackageTaskFactory(php.NewComposerLockCataloger, DeclaredTag, DirectoryTag, LanguageTag, "php", "composer"),
 		newPackageTaskFactory(
-			func(cfg cataloger.Config, pkgCfg pkgCataloger.Config) pkg.Cataloger {
+			func(cfg cataloging.Config, pkgCfg pkgcataloging.Config) pkg.Cataloger {
 				return python.NewPackageCataloger(pkgCfg.Python)
 			},
 			DeclaredTag, DirectoryTag, LanguageTag, "python",
@@ -83,13 +83,13 @@ func DefaultPackageTaskFactories() PackageTaskFactories {
 		newSimplePackageTaskFactory(dotnet.NewDotnetPortableExecutableCataloger, DirectoryTag, InstalledTag, ImageTag, LanguageTag, "dotnet", "c#"),
 		newSimplePackageTaskFactory(python.NewInstalledPackageCataloger, DirectoryTag, InstalledTag, ImageTag, LanguageTag, "python"),
 		newPackageTaskFactory(
-			func(cfg cataloger.Config, pkgCfg pkgCataloger.Config) pkg.Cataloger {
+			func(cfg cataloging.Config, pkgCfg pkgcataloging.Config) pkg.Cataloger {
 				return golang.NewGoModuleBinaryCataloger(pkgCfg.Golang)
 			},
 			DirectoryTag, InstalledTag, ImageTag, LanguageTag, "go", "golang", "gomod", "binary",
 		),
 		newPackageTaskFactory(
-			func(cfg cataloger.Config, pkgCfg pkgCataloger.Config) pkg.Cataloger {
+			func(cfg cataloging.Config, pkgCfg pkgcataloging.Config) pkg.Cataloger {
 				return java.NewArchiveCataloger(pkgCfg.Java)
 			},
 			DirectoryTag, InstalledTag, ImageTag, LanguageTag, "java", "maven",

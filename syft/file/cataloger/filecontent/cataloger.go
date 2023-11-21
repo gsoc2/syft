@@ -23,7 +23,6 @@ func NewCataloger(globs []string, skipFilesAboveSize int64) (*Cataloger, error) 
 	}, nil
 }
 
-// Deprecated: will be removed in syft v1.0.0
 func (i *Cataloger) Catalog(resolver file.Resolver) (map[file.Coordinates]string, error) {
 	results := make(map[file.Coordinates]string)
 	var locations []file.Location

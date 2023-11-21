@@ -5,7 +5,6 @@ import (
 	"fmt"
 
 	"github.com/anchore/syft/syft/artifact"
-	"github.com/anchore/syft/syft/cataloger"
 	"github.com/anchore/syft/syft/file"
 	"github.com/anchore/syft/syft/file/cataloger/filedigest"
 	"github.com/anchore/syft/syft/file/cataloger/filemetadata"
@@ -13,8 +12,8 @@ import (
 	"github.com/anchore/syft/syft/sbom"
 )
 
-func NewFileDigestCatalogerTask(selection cataloger.FileCatalogingSelection, hashers ...crypto.Hash) Task {
-	if selection == cataloger.NoFilesSelection || len(hashers) == 0 {
+func NewFileDigestCatalogerTask(selection file.Selection, hashers ...crypto.Hash) Task {
+	if selection == file.NoFilesSelection || len(hashers) == 0 {
 		return nil
 	}
 
@@ -26,7 +25,7 @@ func NewFileDigestCatalogerTask(selection cataloger.FileCatalogingSelection, has
 		var coordinates []file.Coordinates
 
 		accessor.ReadFromSBOM(func(sbom *sbom.SBOM) {
-			if selection == cataloger.OwnedFilesSelection {
+			if selection == file.OwnedFilesSelection {
 				for _, r := range sbom.Relationships {
 					// TODO: double check this logic
 					if r.Type != artifact.ContainsRelationship {
@@ -57,8 +56,8 @@ func NewFileDigestCatalogerTask(selection cataloger.FileCatalogingSelection, has
 	return NewTask("file-digest-cataloger", fn)
 }
 
-func NewFileMetadataCatalogerTask(selection cataloger.FileCatalogingSelection) Task {
-	if selection == cataloger.NoFilesSelection {
+func NewFileMetadataCatalogerTask(selection file.Selection) Task {
+	if selection == file.NoFilesSelection {
 		return nil
 	}
 
@@ -70,7 +69,7 @@ func NewFileMetadataCatalogerTask(selection cataloger.FileCatalogingSelection) T
 		var coordinates []file.Coordinates
 
 		accessor.ReadFromSBOM(func(sbom *sbom.SBOM) {
-			if selection == cataloger.OwnedFilesSelection {
+			if selection == file.OwnedFilesSelection {
 				for _, r := range sbom.Relationships {
 					if r.Type != artifact.ContainsRelationship {
 						continue
