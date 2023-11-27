@@ -47,6 +47,7 @@ func DefaultPackageTaskFactories() PackageTaskFactories {
 		newSimplePackageTaskFactory(cpp.NewConanInfoCataloger, InstalledTag, ImageTag, LanguageTag, "cpp", "conan"),
 		newSimplePackageTaskFactory(javascript.NewPackageCataloger, InstalledTag, ImageTag, LanguageTag, "javascript", "node"),
 		newSimplePackageTaskFactory(php.NewComposerInstalledCataloger, InstalledTag, ImageTag, LanguageTag, "php", "composer"),
+		newSimplePackageTaskFactory(r.NewPackageCataloger, InstalledTag, ImageTag, LanguageTag, "r"),
 		newSimplePackageTaskFactory(ruby.NewInstalledGemSpecCataloger, InstalledTag, ImageTag, LanguageTag, "ruby", "gem"),
 		newSimplePackageTaskFactory(rust.NewAuditBinaryCataloger, InstalledTag, ImageTag, LanguageTag, "rust", "binary"),
 
@@ -73,7 +74,6 @@ func DefaultPackageTaskFactories() PackageTaskFactories {
 			},
 			DeclaredTag, DirectoryTag, LanguageTag, "python",
 		),
-		newSimplePackageTaskFactory(r.NewPackageCataloger, DeclaredTag, DirectoryTag, LanguageTag, "r"),
 		newSimplePackageTaskFactory(ruby.NewGemFileLockCataloger, DeclaredTag, DirectoryTag, LanguageTag, "ruby", "gem"),
 		newSimplePackageTaskFactory(rust.NewCargoLockCataloger, DeclaredTag, DirectoryTag, LanguageTag, "rust", "cargo"),
 		newSimplePackageTaskFactory(swift.NewCocoapodsCataloger, DeclaredTag, DirectoryTag, LanguageTag, "swift", "cocoapods"),
