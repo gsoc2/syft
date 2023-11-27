@@ -8,6 +8,11 @@ import (
 	"github.com/anchore/syft/syft/file"
 )
 
+var _ interface {
+	Task
+	Selector
+} = (*task)(nil)
+
 // Task is a function that can wrap a cataloger to populate the SBOM with data (coordinated through the mutex).
 type Task interface {
 	Name() string
