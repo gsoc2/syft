@@ -78,6 +78,14 @@ func (c *CreateSBOMConfig) WithFilesConfig(cfg filecataloging.Config) *CreateSBO
 	return c
 }
 
+func (c *CreateSBOMConfig) WithNoFiles() *CreateSBOMConfig {
+	c.FilesConfig = &filecataloging.Config{
+		Selection: file.NoFilesSelection,
+		Hashers:   nil,
+	}
+	return c
+}
+
 func (c *CreateSBOMConfig) WithCatalogerSelectionBasedOnSource(value bool) *CreateSBOMConfig {
 	c.CatalogerSelectionBasedOnSource = value
 	return c

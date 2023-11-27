@@ -2,6 +2,8 @@ package task
 
 import (
 	"fmt"
+
+	"github.com/anchore/syft/internal/log"
 )
 
 type tasks []Task
@@ -15,6 +17,10 @@ func (tds tasks) Select(nodes ...expressionNode) (tasks, error) {
 	s := newSet()
 	for _, node := range nodes {
 		selection := tds.selectTasksWithAllTags(node.Requirements...)
+
+		if len(selection) == 0 {
+			log.WithFields("selection", fmt.Sprintf("%q", node.String())).Warn("no cataloger tasks selected found for given selection (this might be a misconfiguration)")
+		}
 
 		switch node.Prefix {
 		case "+", "":

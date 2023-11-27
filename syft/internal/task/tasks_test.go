@@ -42,6 +42,7 @@ func createPackageTaskDescriptors() tasks {
 		dummyTask("dotnet-deps-cataloger", "declared", "directory", "language", "dotnet", "c#"),
 		dummyTask("elixir-mix-lock-cataloger", "declared", "directory", "language", "elixir"),
 		dummyTask("erlang-rebar-lock-cataloger", "declared", "directory", "language", "erlang"),
+		dummyTask("javascript-lock-cataloger", "declared", "directory", "language", "javascript", "node", "npm"),
 
 		// language-specific package for both image and directory scans (but not necessarily declared)
 		dummyTask("dotnet-portable-executable-cataloger", "directory", "installed", "image", "language", "dotnet", "c#"),
@@ -172,7 +173,7 @@ func TestTaskDescriptors_Evaluate(t *testing.T) {
 			},
 		},
 		{
-			name: "inherit sibling operation",
+			name: "inherit sibling operation within group",
 			tds:  createPackageTaskDescriptors(),
 			expressions: []string{
 				// gets arranged to "image,-declared,-cpp,-language"
@@ -187,6 +188,19 @@ func TestTaskDescriptors_Evaluate(t *testing.T) {
 			},
 		},
 		{
+			name: "keep operation inheritance separate across groups",
+			tds:  createPackageTaskDescriptors(),
+			expressions: []string{
+				// gets arranged to "go,cpp,-declared"
+				"go,-declared",
+				"cpp",
+			},
+			want: []string{
+				"go-module-binary-cataloger",
+				"conan-info-cataloger",
+			},
+		},
+		{
 			name: "intersection as base set with subtraction",
 			tds:  createPackageTaskDescriptors(),
 			expressions: []string{
@@ -197,6 +211,19 @@ func TestTaskDescriptors_Evaluate(t *testing.T) {
 				"portage-cataloger",
 				"alpm-db-cataloger",
 				"apk-db-cataloger",
+			},
+		},
+		{
+			name: "addition before basis in separate group",
+			tds:  createPackageTaskDescriptors(),
+			expressions: []string{
+				"+javascript-lock-cataloger",
+				"sbom",
+				"-java",
+			},
+			want: []string{
+				"javascript-lock-cataloger",
+				"sbom-cataloger",
 			},
 		},
 	}
@@ -214,238 +241,6 @@ func TestTaskDescriptors_Evaluate(t *testing.T) {
 			if !assert.ElementsMatch(t, list, tt.want) {
 				t.Errorf("Evaluate() = %v, want %v", list, tt.want)
 			}
-		})
-	}
-}
-
-func Test_simplifyExpressions(t *testing.T) {
-	tests := []struct {
-		name        string
-		expressions []string
-		want        []expressionNode
-		wantErr     require.ErrorAssertionFunc
-	}{
-		{
-			name:        "empty",
-			expressions: nil,
-			want:        nil,
-		},
-		{
-			name:        "effectively empty",
-			expressions: []string{","},
-			want:        nil,
-		},
-		{
-			name:        "ignore empty nodes",
-			expressions: []string{",a,,,"},
-			want: []expressionNode{
-				{
-					Requirements: []string{"a"},
-				},
-			},
-		},
-		{
-			name:        "single comma-delimited expression",
-			expressions: []string{"a,b"},
-			want: []expressionNode{
-				{
-					Requirements: []string{"a"},
-				},
-				{
-					Requirements: []string{"b"},
-				},
-			},
-		},
-		{
-			name:        "group prefix",
-			expressions: []string{"+a,b"},
-			want: []expressionNode{
-				{
-					Prefix:       "+",
-					Requirements: []string{"a"},
-				},
-				{
-					Prefix:       "+",
-					Requirements: []string{"b"},
-				},
-			},
-		},
-		{
-			name:        "ignore spaces",
-			expressions: []string{"  +  a  ,  b  "},
-			want: []expressionNode{
-				{
-					Prefix:       "+",
-					Requirements: []string{"a"},
-				},
-				{
-					Prefix:       "+",
-					Requirements: []string{"b"},
-				},
-			},
-		},
-		{
-			name:        "multiple group prefixes",
-			expressions: []string{"+a,b,+c"},
-			want: []expressionNode{
-				{
-					Prefix:       "+",
-					Requirements: []string{"a"},
-				},
-				{
-					Prefix:       "+",
-					Requirements: []string{"b"},
-				},
-				{
-					Prefix:       "+",
-					Requirements: []string{"c"},
-				},
-			},
-		},
-		{
-			name:        "multiple conflicting group prefixes",
-			expressions: []string{"+a,b,-c,d"},
-			want: []expressionNode{
-				{
-					Prefix:       "+",
-					Requirements: []string{"a"},
-				},
-				{
-					Prefix:       "+",
-					Requirements: []string{"b"},
-				},
-				{
-					Prefix:       "-",
-					Requirements: []string{"c"},
-				},
-				{
-					Prefix:       "-",
-					Requirements: []string{"d"},
-				},
-			},
-		},
-		{
-			name:        "remove unnecessary prefixes",
-			expressions: []string{"first,second,+a,b,-c,d"},
-			want: []expressionNode{
-				{
-					Requirements: []string{"first"},
-				},
-				{
-					Requirements: []string{"second"},
-				},
-				{
-					Requirements: []string{"a"},
-				},
-				{
-					Requirements: []string{"b"},
-				},
-				{
-					Prefix:       "-",
-					Requirements: []string{"c"},
-				},
-				{
-					Prefix:       "-",
-					Requirements: []string{"d"},
-				},
-			},
-		},
-		{
-			name:        "only prefixes (invalid)",
-			expressions: []string{"+-+"},
-			wantErr:     require.Error,
-		},
-		{
-			name:        "multiple prefixes on a node (invalid)",
-			expressions: []string{"+-+&a"},
-			wantErr:     require.Error,
-		},
-		{
-			name:        "bad prefix (invalid)",
-			expressions: []string{"~a"},
-			wantErr:     require.Error,
-		},
-		{
-			name:        "bad node characters (invalid)",
-			expressions: []string{"a~'something"},
-			wantErr:     require.Error,
-		},
-		{
-			name:        "intersect prefix",
-			expressions: []string{"&a"},
-			want: []expressionNode{
-				{
-					Prefix:       "&",
-					Requirements: []string{"a"},
-				},
-			},
-		},
-		{
-			name:        "remove extra prefixes",
-			expressions: []string{"++a"},
-			want: []expressionNode{
-				{
-					Prefix:       "+",
-					Requirements: []string{"a"},
-				},
-			},
-		},
-		{
-			name:        "names with hyphens",
-			expressions: []string{"+sbom-cataloger,rust&installed,-python-installed-package-cataloger,go-module-binary-cataloger"},
-			want: []expressionNode{
-				{
-					Prefix:       "+",
-					Requirements: []string{"sbom-cataloger"},
-				},
-				{
-					Prefix:       "+",
-					Requirements: []string{"rust", "installed"},
-				},
-				{
-					Prefix:       "-",
-					Requirements: []string{"python-installed-package-cataloger"},
-				},
-				{
-					Prefix:       "-",
-					Requirements: []string{"go-module-binary-cataloger"},
-				},
-			},
-		},
-		{
-			name:        "sort group prefixes",
-			expressions: []string{"-c,d,+a,b"},
-			want: []expressionNode{
-				{
-					Prefix:       "+",
-					Requirements: []string{"a"},
-				},
-				{
-					Prefix:       "+",
-					Requirements: []string{"b"},
-				},
-				{
-					Prefix:       "-",
-					Requirements: []string{"c"},
-				},
-				{
-					Prefix:       "-",
-					Requirements: []string{"d"},
-				},
-			},
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			if tt.wantErr == nil {
-				tt.wantErr = require.NoError
-			}
-			got, err := parseExpressions(tt.expressions)
-			tt.wantErr(t, err)
-			if err != nil {
-				return
-			}
-			assert.Equal(t, tt.want, got)
 		})
 	}
 }

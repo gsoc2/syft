@@ -16,7 +16,7 @@ type expressionNode struct {
 }
 
 func Select(allTasks []Task, basis string, expressions ...string) ([]Task, []string, error) {
-	nodes, err := createExpressionWithBasis(basis, expressions...)
+	nodes, err := parseExpressionsWithBasis(basis, expressions...)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -35,7 +35,7 @@ func Select(allTasks []Task, basis string, expressions ...string) ([]Task, []str
 	return allTasks, expressionNodes(nodes).Strings(), nil
 }
 
-func createExpressionWithBasis(basis string, expressions ...string) ([]expressionNode, error) {
+func parseExpressionsWithBasis(basis string, expressions ...string) ([]expressionNode, error) {
 	nodes, err := parseExpressions(expressions)
 	if err != nil {
 		return nil, err
@@ -64,82 +64,100 @@ func createExpressionWithBasis(basis string, expressions ...string) ([]expressio
 }
 
 func parseExpressions(expressions []string) ([]expressionNode, error) {
-	expression := strings.Join(expressions, ",")
-	expression = strings.ReplaceAll(strings.ToLower(expression), " ", "")
-	fields := strings.Split(expression, ",")
+	var basis, additions, remove []expressionNode
 
-	var remaining, remove []expressionNode
-
-	var firstPrefix string
-	var prefix string
-
-	for idx, field := range fields {
-		ogField := field
-
-		if hasOperatorPrefix(field) {
-			prefix = field[0:1]
-			field = strings.TrimLeft(field, prefix)
+	for idx, exp := range expressions {
+		b, a, r, err := parseExpression(exp)
+		if err != nil {
+			return nil, fmt.Errorf("unable to parse expression %d (%q): %w", idx, exp, err)
 		}
 
-		if field != strings.TrimLeft(field, "+-&") {
-			return nil, fmt.Errorf("invalid node expression: %q", ogField)
-		}
+		basis = append(basis, b...)
+		additions = append(additions, a...)
+		remove = append(remove, r...)
+	}
 
-		if idx == 0 {
-			firstPrefix = prefix
-		} else if prefix == "+" && firstPrefix == "" {
-			prefix = ""
+	if len(basis) > 0 {
+		// treat all additions as if they were a basis (remove any + prefixes)
+		for idx := range additions {
+			additions[idx].Prefix = ""
 		}
+	}
 
-		if len(field) == 0 {
+	var all []expressionNode
+
+	all = append(all, basis...)
+	all = append(all, additions...)
+	all = append(all, remove...)
+
+	return all, nil
+}
+
+// parseExpression takes a singular expression and returns the set of basis nodes, additional nodes, and nodes to remove.
+// Once a prefix is found then that prefix is inherited by all subsequent nodes until a new prefix is found. This implies
+// that basis nodes must be first and have no prefix. No simplifications are performed at this point in processing,
+// only creating nodes from string expressions.
+func parseExpression(expression string) (basis, additions, removals []expressionNode, err error) {
+	expression = strings.ReplaceAll(expression, " ", "")
+	if expression == "" {
+		return nil, nil, nil, nil
+	}
+
+	prefix := ""
+	for _, segment := range strings.Split(expression, ",") {
+		if segment == "" {
 			continue
 		}
 
-		if !isValidNode(field) {
-			return nil, fmt.Errorf("invalid node expression: %q", ogField)
+		ogSegment := segment
+
+		if hasOperatorPrefix(segment) {
+			prefix = string(segment[0])
+			segment = segment[1:]
 		}
 
-		var requiredTags []string
-		for _, s := range strings.Split(field, "&") {
-			if s != "" {
-				requiredTags = append(requiredTags, s)
+		if prefix == "&" {
+			if len(basis) > 0 {
+				// amend the last node in the basis with the new requirement
+				basis[len(basis)-1].Requirements = append(basis[len(basis)-1].Requirements, segment)
+				continue
 			}
 		}
 
-		if prefix == "&" && len(remaining) > 0 {
-			// conjoin with requirements of the last node. This specifically does NOT interact with set removals.
-			lastRemaining := len(remaining) - 1
-			remaining[lastRemaining].Requirements = append(remaining[lastRemaining].Requirements, requiredTags...)
-			continue
+		if !isValidNode(segment) {
+			return nil, nil, nil, fmt.Errorf("invalid expression node: %q", ogSegment)
 		}
 
+		requirements := strings.Split(segment, "&")
 		node := expressionNode{
 			Prefix:       prefix,
-			Requirements: requiredTags,
+			Requirements: requirements,
 		}
 
-		if prefix == "-" {
-			remove = append(remove, node)
-			continue
+		switch prefix {
+		case "+":
+			additions = append(additions, node)
+		case "-":
+			removals = append(removals, node)
+		default:
+			basis = append(basis, node)
 		}
-		remaining = append(remaining, node)
 	}
 
-	return append(remaining, remove...), nil
+	return basis, additions, removals, nil
 }
 
 func hasOperatorPrefix(s string) bool {
 	return strings.HasPrefix(s, "+") || strings.HasPrefix(s, "-") || strings.HasPrefix(s, "&")
 }
 
-func (e expressionNodes) String() string {
-	return strings.Join(e.Strings(), ",")
-}
-
 func (e expressionNodes) Strings() []string {
 	var parts []string
 	for _, node := range e {
-		parts = append(parts, strings.ReplaceAll(node.String(), "+", ""))
+		val := strings.ReplaceAll(node.String(), "+", "")
+		if val != "" {
+			parts = append(parts, val)
+		}
 	}
 
 	return parts

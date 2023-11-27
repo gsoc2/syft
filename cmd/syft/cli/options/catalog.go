@@ -2,7 +2,6 @@ package options
 
 import (
 	"fmt"
-	"strings"
 
 	"github.com/iancoleman/strcase"
 	"github.com/mitchellh/go-homedir"
@@ -161,15 +160,6 @@ func (cfg *Catalog) AddFlags(flags clio.FlagSet) {
 }
 
 func (cfg *Catalog) PostLoad() error {
-	// parse options on this struct
-	var catalogers []string
-	for _, c := range cfg.Catalogers {
-		for _, f := range strings.Split(c, ",") {
-			catalogers = append(catalogers, strings.TrimSpace(f))
-		}
-	}
-	cfg.Catalogers = catalogers
-
 	if cfg.Name != "" {
 		log.Warnf("name parameter is deprecated. please use: source-name. name will be removed in a future version")
 		if cfg.Source.Name == "" {
