@@ -197,6 +197,15 @@ func (c *CreateSBOMConfig) packageTasks(src source.Description) ([]task.Task, []
 	return task.Select(pkgTasks, basis, c.CatalogerSelectionExpressions...)
 }
 
+func (c *CreateSBOMConfig) validate() error {
+	if c.CatalogerConfig.Relationships.ExcludeBinaryPackagesWithFileOwnershipOverlap {
+		if !c.CatalogerConfig.Relationships.FileOwnershipOverlap {
+			return fmt.Errorf("invalid configuration: to exclude binary packages based on file ownership overlap relationships, cataloging file ownership overlap relationships must be enabled")
+		}
+	}
+	return nil
+}
+
 func (c *CreateSBOMConfig) Create(src source.Source) (*sbom.SBOM, error) {
 	return CreateSBOM(src, c)
 }

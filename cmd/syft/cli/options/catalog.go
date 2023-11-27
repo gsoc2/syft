@@ -23,24 +23,25 @@ import (
 
 type Catalog struct {
 	// high-level cataloger configuration
-	Catalogers  []string `yaml:"catalogers" json:"catalogers" mapstructure:"catalogers"`
-	Package     pkg      `yaml:"package" json:"package" mapstructure:"package"`
-	File        fileCfg  `yaml:"file" json:"file" mapstructure:"file"`
-	Scope       string   `yaml:"scope" json:"scope" mapstructure:"scope"`
-	Parallelism int      `yaml:"parallelism" json:"parallelism" mapstructure:"parallelism"` // the number of catalog workers to run in parallel
+	Catalogers    []string            `yaml:"catalogers" json:"catalogers" mapstructure:"catalogers"`
+	Package       pkg                 `yaml:"package" json:"package" mapstructure:"package"`
+	File          fileConfig          `yaml:"file" json:"file" mapstructure:"file"`
+	Scope         string              `yaml:"scope" json:"scope" mapstructure:"scope"`
+	Parallelism   int                 `yaml:"parallelism" json:"parallelism" mapstructure:"parallelism"` // the number of catalog workers to run in parallel
+	Relationships relationshipsConfig `yaml:"relationships" json:"relationships" mapstructure:"relationships"`
 
 	// ecosystem-specific cataloger configuration
-	Golang      golangConfig `yaml:"golang" json:"golang" mapstructure:"golang"`
-	Java        javaConfig   `yaml:"java" json:"java" mapstructure:"java"`
-	LinuxKernel linuxKernel  `yaml:"linux-kernel" json:"linux-kernel" mapstructure:"linux-kernel"`
-	Python      pythonConfig `yaml:"python" json:"python" mapstructure:"python"`
+	Golang      golangConfig      `yaml:"golang" json:"golang" mapstructure:"golang"`
+	Java        javaConfig        `yaml:"java" json:"java" mapstructure:"java"`
+	LinuxKernel linuxKernelConfig `yaml:"linux-kernel" json:"linux-kernel" mapstructure:"linux-kernel"`
+	Python      pythonConfig      `yaml:"python" json:"python" mapstructure:"python"`
 
 	// configuration for the source (the subject being analyzed)
-	Registry   registry     `yaml:"registry" json:"registry" mapstructure:"registry"`
-	Platform   string       `yaml:"platform" json:"platform" mapstructure:"platform"`
-	Name       string       `yaml:"name" json:"name" mapstructure:"name"` // deprecated
-	Source     sourceConfig `yaml:"source" json:"source" mapstructure:"source"`
-	Exclusions []string     `yaml:"exclude" json:"exclude" mapstructure:"exclude"`
+	Registry   registryConfig `yaml:"registry" json:"registry" mapstructure:"registry"`
+	Platform   string         `yaml:"platform" json:"platform" mapstructure:"platform"`
+	Name       string         `yaml:"name" json:"name" mapstructure:"name"` // deprecated
+	Source     sourceConfig   `yaml:"source" json:"source" mapstructure:"source"`
+	Exclusions []string       `yaml:"exclude" json:"exclude" mapstructure:"exclude"`
 }
 
 var _ interface {
@@ -50,12 +51,13 @@ var _ interface {
 
 func DefaultCatalog() Catalog {
 	return Catalog{
-		Scope:       source.SquashedScope.String(),
-		Package:     defaultPkg(),
-		LinuxKernel: defaultLinuxKernel(),
-		File:        defaultFile(),
-		Source:      defaultSourceCfg(),
-		Parallelism: 1,
+		Scope:         source.SquashedScope.String(),
+		Package:       defaultPkg(),
+		LinuxKernel:   defaultLinuxKernel(),
+		File:          defaultFile(),
+		Relationships: defaultRelationships(),
+		Source:        defaultSourceCfg(),
+		Parallelism:   1,
 	}
 }
 
@@ -65,8 +67,9 @@ func (cfg Catalog) ToCatalogerConfig() cataloging.Config {
 			Scope: source.ParseScope(cfg.Scope),
 		},
 		Relationships: cataloging.RelationshipsConfig{
-			FileOwnership:        true,  // TODO: tie to app config
-			FileOwnershipOverlap: false, // TODO: tie to app config
+			FileOwnership:        cfg.Relationships.FileOwnership,
+			FileOwnershipOverlap: cfg.Relationships.FileOwnershipOverlap,
+			// note: this option was surfaced in the syft application configuration before this relationships section was added
 			ExcludeBinaryPackagesWithFileOwnershipOverlap: cfg.Package.ExcludeBinaryOverlapByOwnership,
 		},
 		DataGeneration: cataloging.DataGenerationConfig{

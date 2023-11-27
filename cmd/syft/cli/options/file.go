@@ -7,7 +7,7 @@ import (
 	"github.com/anchore/syft/syft/file"
 )
 
-type fileCfg struct {
+type fileConfig struct {
 	Metadata fileMetadata `yaml:"metadata" json:"metadata" mapstructure:"metadata"`
 	Content  fileContent  `yaml:"content" json:"content" mapstructure:"content"`
 }
@@ -22,8 +22,8 @@ type fileContent struct {
 	Globs              []string `yaml:"globs" json:"globs" mapstructure:"globs"`
 }
 
-func defaultFile() fileCfg {
-	return fileCfg{
+func defaultFile() fileConfig {
+	return fileConfig{
 		Metadata: fileMetadata{
 			Selection: file.OwnedFilesSelection,
 			Digests:   []string{"sha1", "sha256"},
@@ -34,7 +34,7 @@ func defaultFile() fileCfg {
 	}
 }
 
-func (c *fileCfg) PostLoad() error {
+func (c *fileConfig) PostLoad() error {
 	switch c.Metadata.Selection {
 	case file.NoFilesSelection, file.OwnedFilesSelection, file.AllFilesSelection:
 		return nil

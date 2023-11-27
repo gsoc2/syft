@@ -24,6 +24,10 @@ func CreateSBOM(src source.Source, cfg *CreateSBOMConfig) (*sbom.SBOM, error) {
 		return nil, fmt.Errorf("cataloger config must be specified")
 	}
 
+	if err := cfg.validate(); err != nil {
+		return nil, fmt.Errorf("invalid configuration: %w", err)
+	}
+
 	srcMetadata := src.Describe()
 
 	taskGroups, audit, err := cfg.finalTaskGroups(srcMetadata)
