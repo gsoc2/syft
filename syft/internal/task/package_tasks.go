@@ -48,7 +48,7 @@ func DefaultPackageTaskFactories() PackageTaskFactories {
 		newSimplePackageTaskFactory(javascript.NewPackageCataloger, InstalledTag, ImageTag, LanguageTag, "javascript", "node"),
 		newSimplePackageTaskFactory(php.NewComposerInstalledCataloger, InstalledTag, ImageTag, LanguageTag, "php", "composer"),
 		newSimplePackageTaskFactory(r.NewPackageCataloger, InstalledTag, ImageTag, LanguageTag, "r"),
-		newSimplePackageTaskFactory(ruby.NewInstalledGemSpecCataloger, InstalledTag, ImageTag, LanguageTag, "ruby", "gem"),
+		newSimplePackageTaskFactory(ruby.NewInstalledGemSpecCataloger, InstalledTag, ImageTag, LanguageTag, "ruby", "gem", "gemspec"),
 		newSimplePackageTaskFactory(rust.NewAuditBinaryCataloger, InstalledTag, ImageTag, LanguageTag, "rust", "binary"),
 
 		// language-specific package declared catalogers ///////////////////////////////////////////////////////////////////////////
@@ -75,6 +75,7 @@ func DefaultPackageTaskFactories() PackageTaskFactories {
 			DeclaredTag, DirectoryTag, LanguageTag, "python",
 		),
 		newSimplePackageTaskFactory(ruby.NewGemFileLockCataloger, DeclaredTag, DirectoryTag, LanguageTag, "ruby", "gem"),
+		newSimplePackageTaskFactory(ruby.NewGemSpecCataloger, DeclaredTag, DirectoryTag, LanguageTag, "ruby", "gem", "gemspec"),
 		newSimplePackageTaskFactory(rust.NewCargoLockCataloger, DeclaredTag, DirectoryTag, LanguageTag, "rust", "cargo"),
 		newSimplePackageTaskFactory(swift.NewCocoapodsCataloger, DeclaredTag, DirectoryTag, LanguageTag, "swift", "cocoapods"),
 		newSimplePackageTaskFactory(swift.NewSwiftPackageManagerCataloger, DeclaredTag, DirectoryTag, LanguageTag, "swift", "spm"),
