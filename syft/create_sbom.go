@@ -9,9 +9,9 @@ import (
 	"github.com/scylladb/go-set/strset"
 	"github.com/wagoodman/go-progress"
 
+	"github.com/anchore/syft/internal/task"
 	"github.com/anchore/syft/syft/artifact"
 	"github.com/anchore/syft/syft/event/monitor"
-	"github.com/anchore/syft/syft/internal/task"
 	"github.com/anchore/syft/syft/linux"
 	"github.com/anchore/syft/syft/pkg"
 	"github.com/anchore/syft/syft/sbom"
