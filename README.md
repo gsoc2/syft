@@ -109,13 +109,13 @@ nix-shell -p syft
 
 To generate an SBOM for a container image:
 
-```
+```bash
 syft <image>
 ```
 
 The above output includes only software that is visible in the container (i.e., the squashed representation of the image). To include software from all image layers in the SBOM, regardless of its presence in the final image, provide `--scope all-layers`:
 
-```
+```bash
 syft <image> --scope all-layers
 ```
 
@@ -123,7 +123,7 @@ syft <image> --scope all-layers
 
 Syft can generate a SBOM from a variety of sources:
 
-```
+```bash
 # catalog a container image archive (from the result of `docker image save ...`, `podman save ...`, or `skopeo copy` commands)
 syft path/to/image.tar
 
@@ -155,69 +155,53 @@ If docker is not present, then the Podman daemon is attempted next, followed by 
 
 This default behavior can be overridden with the `default-image-pull-source` configuration option (See [Configuration](https://github.com/anchore/syft#configuration) for more details).
 
-### Default Cataloger Configuration by scan type
+### Cataloger selection
 
-Syft uses different default sets of catalogers depending on what it is scanning: a container image or a directory on disk. The default catalogers for an image scan assumes that package installation steps have already been completed. For example, Syft will identify Python packages that have egg or wheel metadata files under a site-packages directory, since this indicates software actually installed on an image.
+Syft uses different default sets of catalogers depending on what is being scanned: a container image or a directory on disk. 
 
-However, if you are scanning a directory, Syft doesn't assume that all relevant software is installed, and will use catalogers that can identify declared dependencies that may not yet be installed on the final system: for example, dependencies listed in a Python requirements.txt.
+The default catalogers for an image scan assumes that package installation steps have already been completed. For example, Syft will identify Python packages that have egg or wheel metadata files under a `site-packages` directory, since this is how the canonical tooling `pip` installs python packages.
 
-You can override the list of enabled/disabled catalogers by using the "catalogers" keyword in the [Syft configuration file](https://github.com/anchore/syft#configuration).
+The default catalogers for a directory scan will look for installed software as well as declared dependencies that are not necessarily installed. Tor example, dependencies listed in a Python requirements.txt.
 
-##### Image Scanning:
-- alpmdb
-- apkdb
-- binary
-- dotnet-deps
-- dotnet-portable-executable
-- dpkgdb
-- go-module-binary
-- graalvm-native-image
-- java
-- javascript-package
-- linux-kernel
-- nix-store
-- php-composer-installed
-- portage
-- python-package
-- rpm-db
-- ruby-gemspec
-- sbom
+You can override the list of enabled/disabled catalogers by using the `catalogers` option in the [Syft configuration file](https://github.com/anchore/syft#configuration) or with the `--catalogers` CLI flag. This is capable of replacing the set of catalogers used or augmenting the default set. For example:
 
-##### Directory Scanning:
-- alpmdb
-- apkdb
-- binary
-- cocoapods
-- conan
-- dartlang-lock
-- dotnet-deps
-- dotnet-portable-executable
-- dpkgdb
-- elixir-mix-lock
-- erlang-rebar-lock
-- go-mod-file
-- go-module-binary
-- graalvm-native-image
-- haskell
-- java
-- java-gradle-lockfile
-- java-pom
-- javascript-lock
-- linux-kernel
-- nix-store
-- php-composer-lock
-- portage
-- python-index
-- python-package
-- rpm-db
-- rpm-file
-- ruby-gemfile
-- rust-cargo-lock
-- sbom
-- swift-package-manager
+```bash
+# only scan with the specific "go-module-binary-cataloger" and "go-module-file-cataloger" catalogers
+syft ... --catalogers "go-module-binary-cataloger,go-module-file-cataloger"
 
-##### Non Default:
-- cargo-auditable-binary
+# only scan with all catalogers that are tagged with "go" and "sbom", which includes:
+# - go-module-binary-cataloger
+# - go-module-file-cataloger
+# - sbom-cataloger
+syft ... --catalogers go --catalogers sbom
+
+# only scan with all catalogers that deal with binary analysis:
+# - binary-cataloger
+# - cargo-auditable-binary-cataloger
+# - dotnet-portable-executable-cataloger
+# - go-module-binary-cataloger
+syft ... --catalogers binary
+
+# use the default set of catalogers + add an additional cataloger to the set
+syft ... --catalogers "+sbom-cataloger"
+
+# use the default set of catalogers + remove any catalogers that deal with RPMs
+syft ... --catalogers "-rpm"
+
+# only scan for javascript related packages based on the set of default catalogers
+syft ... --catalogers "&javascript"
+```
+
+Default set of catalogers used when scanning a specific source type can be used directly as well:
+
+```bash
+# use the default set of catalogers for an image scan (regardless of the source type)
+syft ... --catalogers "image"
+
+# use the default set of catalogers for an directory or file scan (regardless of the source type)
+syft ... --catalogers "directory"
+```
+
 
 ### Excluding file paths
 
