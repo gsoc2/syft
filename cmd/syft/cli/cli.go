@@ -84,6 +84,7 @@ func create(id clio.Identification, out io.Writer) (clio.Application, *cobra.Com
 
 	// add sub-commands
 	rootCmd.AddCommand(
+		commands.Cataloger(app),
 		packagesCmd,
 		commands.Attest(app),
 		commands.Convert(app),

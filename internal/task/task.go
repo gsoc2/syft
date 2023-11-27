@@ -21,6 +21,7 @@ type Task interface {
 
 type Selector interface {
 	HasAllSelectors(...string) bool
+	Selectors() []string
 }
 
 type task struct {
@@ -44,6 +45,10 @@ func NewTask(name string, tsk func(file.Resolver, SBOMBuilder) error, tags ...st
 func (t task) HasAllSelectors(ids ...string) bool {
 	// tags or name
 	return t.selectors.Has(ids...)
+}
+
+func (t task) Selectors() []string {
+	return t.selectors.List()
 }
 
 func (t task) Name() string {
