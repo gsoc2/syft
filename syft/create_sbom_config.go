@@ -17,9 +17,9 @@ import (
 // CreateSBOMConfig specifies all parameters needed for creating an SBOM
 type CreateSBOMConfig struct {
 	// required configuration input to specify how cataloging should be performed
-	CatalogerConfig                 *cataloging.Config
-	PackagesConfig                  *pkgcataloging.Config
-	FilesConfig                     *filecataloging.Config
+	CatalogerConfig                 cataloging.Config
+	PackagesConfig                  pkgcataloging.Config
+	FilesConfig                     filecataloging.Config
 	Parallelism                     int
 	CatalogerSelectionBasedOnSource bool
 	CatalogerSelectionExpressions   []string
@@ -34,13 +34,10 @@ type CreateSBOMConfig struct {
 }
 
 func DefaultCreateSBOMConfig() *CreateSBOMConfig {
-	cfg := cataloging.DefaultConfig()
-	pkgCfg := pkgcataloging.DefaultConfig()
-	fileCfg := filecataloging.DefaultConfig()
 	return &CreateSBOMConfig{
-		CatalogerConfig:                 &cfg,
-		PackagesConfig:                  &pkgCfg,
-		FilesConfig:                     &fileCfg,
+		CatalogerConfig:                 cataloging.DefaultConfig(),
+		PackagesConfig:                  pkgcataloging.DefaultConfig(),
+		FilesConfig:                     filecataloging.DefaultConfig(),
 		CatalogerSelectionBasedOnSource: true,
 		Parallelism:                     1,
 		packageTaskFactories:            task.DefaultPackageTaskFactories(),
@@ -64,22 +61,22 @@ func (c *CreateSBOMConfig) WithParallelism(p int) *CreateSBOMConfig {
 }
 
 func (c *CreateSBOMConfig) WithCatalogingConfig(cfg cataloging.Config) *CreateSBOMConfig {
-	c.CatalogerConfig = &cfg
+	c.CatalogerConfig = cfg
 	return c
 }
 
 func (c *CreateSBOMConfig) WithPackagesConfig(cfg pkgcataloging.Config) *CreateSBOMConfig {
-	c.PackagesConfig = &cfg
+	c.PackagesConfig = cfg
 	return c
 }
 
 func (c *CreateSBOMConfig) WithFilesConfig(cfg filecataloging.Config) *CreateSBOMConfig {
-	c.FilesConfig = &cfg
+	c.FilesConfig = cfg
 	return c
 }
 
 func (c *CreateSBOMConfig) WithNoFiles() *CreateSBOMConfig {
-	c.FilesConfig = &filecataloging.Config{
+	c.FilesConfig = filecataloging.Config{
 		Selection: file.NoFilesSelection,
 		Hashers:   nil,
 	}
@@ -128,21 +125,6 @@ func (c *CreateSBOMConfig) WithCataloger(cat pkg.Cataloger, tags ...string) *Cre
 func (c *CreateSBOMConfig) finalTaskGroups(src source.Description) ([][]task.Task, *catalogerManifest, error) {
 	var taskGroups [][]task.Task
 
-	if c.CatalogerConfig == nil {
-		return nil, nil, fmt.Errorf("cataloger config must be specified")
-	}
-
-	if c.PackagesConfig == nil {
-		return nil, nil, fmt.Errorf("packages config must be specified when default catalogers are used")
-	}
-
-	if c.FilesConfig == nil {
-		c.FilesConfig = &filecataloging.Config{
-			Selection: file.NoFilesSelection,
-			Hashers:   nil,
-		}
-	}
-
 	// generate package and file tasks based on the configuration
 	fileTasks := c.fileTasks()
 	pkgTasks, request, err := c.packageTasks(src)
@@ -177,7 +159,7 @@ func (c *CreateSBOMConfig) fileTasks() []task.Task {
 }
 
 func (c *CreateSBOMConfig) packageTasks(src source.Description) ([]task.Task, []string, error) {
-	pkgTasks, err := c.packageTaskFactories.Tasks(*c.CatalogerConfig, *c.PackagesConfig)
+	pkgTasks, err := c.packageTaskFactories.Tasks(c.CatalogerConfig, c.PackagesConfig)
 	if err != nil {
 		return nil, nil, fmt.Errorf("unable to create package cataloger tasks: %w", err)
 	}

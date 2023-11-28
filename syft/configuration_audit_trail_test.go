@@ -28,20 +28,20 @@ func Test_configurationAuditTrail_MarshalJSON(t *testing.T) {
 		{
 			name: "gocase",
 			cfg: configurationAuditTrail{
-				CatalogerConfig: &cataloging.Config{
+				CatalogerConfig: cataloging.Config{
 					Search: cataloging.SearchConfig{
 						Scope: source.SquashedScope,
 					},
 					Relationships:  cataloging.RelationshipsConfig{},
 					DataGeneration: cataloging.DataGenerationConfig{},
 				},
-				PackagesConfig: &pkgcataloging.Config{
+				PackagesConfig: pkgcataloging.Config{
 					Golang:      golang.CatalogerConfig{},
 					LinuxKernel: kernel.LinuxKernelCatalogerConfig{},
 					Python:      python.CatalogerConfig{},
 					Java:        java.CatalogerConfig{},
 				},
-				FilesConfig: &filecataloging.Config{
+				FilesConfig: filecataloging.Config{
 					Selection: file.OwnedFilesSelection,
 					Hashers: []crypto.Hash{
 						crypto.SHA256,

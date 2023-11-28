@@ -11,11 +11,11 @@ import (
 
 // configurationAuditTrail is all input configuration was used to generate the SBOM
 type configurationAuditTrail struct {
-	CatalogerConfig *cataloging.Config     `json:"catalog,omitempty" yaml:"catalog" mapstructure:"catalog"`
-	PackagesConfig  *pkgcataloging.Config  `json:"packages,omitempty" yaml:"packages" mapstructure:"packages"`
-	FilesConfig     *filecataloging.Config `json:"files,omitempty" yaml:"files" mapstructure:"files"`
-	Catalogers      catalogerManifest      `json:"catalogers" yaml:"catalogers" mapstructure:"catalogers"`
-	ExtraConfigs    any                    `json:"extra,omitempty" yaml:"extra" mapstructure:"extra"`
+	CatalogerConfig cataloging.Config     `json:"catalog" yaml:"catalog" mapstructure:"catalog"`
+	PackagesConfig  pkgcataloging.Config  `json:"packages" yaml:"packages" mapstructure:"packages"`
+	FilesConfig     filecataloging.Config `json:"files" yaml:"files" mapstructure:"files"`
+	Catalogers      catalogerManifest     `json:"catalogers" yaml:"catalogers" mapstructure:"catalogers"`
+	ExtraConfigs    any                   `json:"extra,omitempty" yaml:"extra" mapstructure:"extra"`
 }
 
 type catalogerManifest struct {
