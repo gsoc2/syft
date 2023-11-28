@@ -4,6 +4,7 @@ import (
 	"crypto"
 	"encoding/json"
 	"fmt"
+	"strings"
 
 	intFile "github.com/anchore/syft/internal/file"
 	"github.com/anchore/syft/internal/log"
@@ -42,7 +43,7 @@ func (cfg Config) MarshalJSON() ([]byte, error) {
 func hashersToString(hashers []crypto.Hash) []string {
 	var result []string
 	for _, h := range hashers {
-		result = append(result, h.String())
+		result = append(result, strings.ToLower(h.String()))
 	}
 	return result
 }

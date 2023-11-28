@@ -48,6 +48,7 @@ func CreateSBOM(src source.Source, cfg *CreateSBOMConfig) (*sbom.SBOM, error) {
 			Configuration: configurationAuditTrail{
 				CatalogerConfig: cfg.CatalogerConfig,
 				PackagesConfig:  cfg.PackagesConfig,
+				FilesConfig:     cfg.FilesConfig,
 				Catalogers:      *audit,
 				ExtraConfigs:    cfg.ToolConfiguration,
 			},
