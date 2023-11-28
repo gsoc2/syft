@@ -79,7 +79,7 @@ func (cfg Catalog) ToCatalogerConfig() cataloging.Config {
 	}
 }
 
-func (cfg Catalog) ToSBOMConfig(id clio.Identification) *syft.CreateSBOMConfig {
+func (cfg Catalog) ToSBOMConfig(id clio.Identification) syft.CreateSBOMConfig {
 	return syft.DefaultCreateSBOMConfig().
 		WithTool(id.Name, id.Version).
 		WithParallelism(cfg.Parallelism).

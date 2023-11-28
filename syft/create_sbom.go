@@ -19,11 +19,7 @@ import (
 )
 
 // nolint:funlen
-func CreateSBOM(src source.Source, cfg *CreateSBOMConfig) (*sbom.SBOM, error) {
-	if cfg == nil {
-		return nil, fmt.Errorf("cataloger config must be specified")
-	}
-
+func CreateSBOM(src source.Source, cfg CreateSBOMConfig) (*sbom.SBOM, error) {
 	if err := cfg.validate(); err != nil {
 		return nil, fmt.Errorf("invalid configuration: %w", err)
 	}

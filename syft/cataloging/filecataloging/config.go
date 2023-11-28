@@ -62,3 +62,13 @@ func (cfg *Config) UnmarshalJSON(data []byte) error {
 	cfg.Hashers = hashers
 	return nil
 }
+
+func (cfg Config) WithSelection(selection file.Selection) Config {
+	cfg.Selection = selection
+	return cfg
+}
+
+func (cfg Config) WithHashers(hashers []crypto.Hash) Config {
+	cfg.Hashers = hashers
+	return cfg
+}

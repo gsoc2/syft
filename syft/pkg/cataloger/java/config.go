@@ -33,10 +33,7 @@ func (j CatalogerConfig) WithArchiveTraversal(search cataloging.ArchiveSearchCon
 
 func DefaultCatalogerConfig() CatalogerConfig {
 	return CatalogerConfig{
-		ArchiveSearchConfig: cataloging.ArchiveSearchConfig{
-			IncludeIndexedArchives:   true,
-			IncludeUnindexedArchives: false,
-		},
+		ArchiveSearchConfig:     cataloging.DefaultArchiveSearchConfig(),
 		UseNetwork:              false,
 		MavenBaseURL:            mavenBaseURL,
 		MaxParentRecursiveDepth: 5,
