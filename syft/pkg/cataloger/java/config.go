@@ -4,26 +4,26 @@ import "github.com/anchore/syft/syft/cataloging"
 
 const mavenBaseURL = "https://repo1.maven.org/maven2"
 
-type CatalogerConfig struct {
+type ArchiveCatalogerConfig struct {
 	cataloging.ArchiveSearchConfig `yaml:",inline" json:"" mapstructure:",squash"`
 	UseNetwork                     bool   `yaml:"use-network" json:"use-network" mapstructure:"use-network"`
 	MavenBaseURL                   string `yaml:"maven-base-url" json:"maven-base-url" mapstructure:"maven-base-url"`
 	MaxParentRecursiveDepth        int    `yaml:"max-parent-recursive-depth" json:"max-parent-recursive-depth" mapstructure:"max-parent-recursive-depth"`
 }
 
-func (j CatalogerConfig) WithUseNetwork(input bool) CatalogerConfig {
+func (j ArchiveCatalogerConfig) WithUseNetwork(input bool) ArchiveCatalogerConfig {
 	j.UseNetwork = input
 	return j
 }
 
-func (j CatalogerConfig) WithMavenCentralURL(input string) CatalogerConfig {
+func (j ArchiveCatalogerConfig) WithMavenBaseURL(input string) ArchiveCatalogerConfig {
 	if input != "" {
 		j.MavenBaseURL = input
 	}
 	return j
 }
 
-func (j CatalogerConfig) WithArchiveTraversal(search cataloging.ArchiveSearchConfig, maxDepth int) CatalogerConfig {
+func (j ArchiveCatalogerConfig) WithArchiveTraversal(search cataloging.ArchiveSearchConfig, maxDepth int) ArchiveCatalogerConfig {
 	if maxDepth > 0 {
 		j.MaxParentRecursiveDepth = maxDepth
 	}
@@ -31,8 +31,8 @@ func (j CatalogerConfig) WithArchiveTraversal(search cataloging.ArchiveSearchCon
 	return j
 }
 
-func DefaultCatalogerConfig() CatalogerConfig {
-	return CatalogerConfig{
+func DefaultArchiveCatalogerConfig() ArchiveCatalogerConfig {
+	return ArchiveCatalogerConfig{
 		ArchiveSearchConfig:     cataloging.DefaultArchiveSearchConfig(),
 		UseNetwork:              false,
 		MavenBaseURL:            mavenBaseURL,

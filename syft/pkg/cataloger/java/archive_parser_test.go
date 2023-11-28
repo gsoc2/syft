@@ -78,7 +78,7 @@ func TestSearchMavenForLicenses(t *testing.T) {
 		name             string
 		fixture          string
 		detectNested     bool
-		config           CatalogerConfig
+		config           ArchiveCatalogerConfig
 		requestPath      string
 		requestHandlers  []handlerPath
 		expectedLicenses []pkg.License
@@ -87,7 +87,7 @@ func TestSearchMavenForLicenses(t *testing.T) {
 			name:         "searchMavenForLicenses returns the expected licenses when search is set to true",
 			fixture:      "opensaml-core-3.4.6",
 			detectNested: false,
-			config: CatalogerConfig{
+			config: ArchiveCatalogerConfig{
 				UseNetwork:              true,
 				MavenBaseURL:            url,
 				MaxParentRecursiveDepth: 2,
@@ -401,7 +401,7 @@ func TestParseJar(t *testing.T) {
 			parser, cleanupFn, err := newJavaArchiveParser(file.LocationReadCloser{
 				Location:   file.NewLocation(fixture.Name()),
 				ReadCloser: fixture,
-			}, false, CatalogerConfig{UseNetwork: false})
+			}, false, ArchiveCatalogerConfig{UseNetwork: false})
 			defer cleanupFn()
 			require.NoError(t, err)
 
@@ -667,7 +667,7 @@ func TestParseNestedJar(t *testing.T) {
 
 			fixture, err := os.Open(test.fixture)
 			require.NoError(t, err)
-			gap := newGenericArchiveParserAdapter(CatalogerConfig{})
+			gap := newGenericArchiveParserAdapter(ArchiveCatalogerConfig{})
 
 			actual, _, err := gap.parseJavaArchive(nil, nil, file.LocationReadCloser{
 				Location:   file.NewLocation(fixture.Name()),
@@ -1089,7 +1089,7 @@ func Test_newPackageFromMavenData(t *testing.T) {
 			}
 			test.expectedParent.Locations = locations
 
-			actualPackage := newPackageFromMavenData(test.props, test.project, test.parent, file.NewLocation(virtualPath), DefaultCatalogerConfig())
+			actualPackage := newPackageFromMavenData(test.props, test.project, test.parent, file.NewLocation(virtualPath), DefaultArchiveCatalogerConfig())
 			if test.expectedPackage == nil {
 				require.Nil(t, actualPackage)
 			} else {
@@ -1309,7 +1309,7 @@ func Test_parseJavaArchive_regressions(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			gap := newGenericArchiveParserAdapter(CatalogerConfig{})
+			gap := newGenericArchiveParserAdapter(ArchiveCatalogerConfig{})
 			if tt.assignParent {
 				assignParent(&tt.expectedPkgs[0], tt.expectedPkgs[1:]...)
 			}

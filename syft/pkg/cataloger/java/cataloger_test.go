@@ -57,7 +57,7 @@ func Test_ArchiveCataloger_Globs(t *testing.T) {
 				ExpectsResolverContentQueries(test.expected).
 				TestCataloger(t,
 					NewArchiveCataloger(
-						CatalogerConfig{
+						ArchiveCatalogerConfig{
 							ArchiveSearchConfig: cataloging.ArchiveSearchConfig{
 								IncludeIndexedArchives:   true,
 								IncludeUnindexedArchives: true,

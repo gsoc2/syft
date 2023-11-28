@@ -19,10 +19,10 @@ var genericZipGlobs = []string{
 // parseZipWrappedJavaArchive is a parser function for java archive contents contained within arbitrary zip files.
 
 type genericZipWrappedJavaArchiveParser struct {
-	cfg CatalogerConfig
+	cfg ArchiveCatalogerConfig
 }
 
-func newGenericZipWrappedJavaArchiveParser(cfg CatalogerConfig) genericZipWrappedJavaArchiveParser {
+func newGenericZipWrappedJavaArchiveParser(cfg ArchiveCatalogerConfig) genericZipWrappedJavaArchiveParser {
 	return genericZipWrappedJavaArchiveParser{
 		cfg: cfg,
 	}

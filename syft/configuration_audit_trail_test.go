@@ -39,7 +39,7 @@ func Test_configurationAuditTrail_MarshalJSON(t *testing.T) {
 					Golang:      golang.CatalogerConfig{},
 					LinuxKernel: kernel.LinuxKernelCatalogerConfig{},
 					Python:      python.CatalogerConfig{},
-					Java:        java.CatalogerConfig{},
+					Java:        java.ArchiveCatalogerConfig{},
 				},
 				FilesConfig: filecataloging.Config{
 					Selection: file.OwnedFilesSelection,
