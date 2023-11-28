@@ -39,7 +39,7 @@ func Test_configurationAuditTrail_MarshalJSON(t *testing.T) {
 					Golang:      golang.CatalogerConfig{},
 					LinuxKernel: kernel.LinuxKernelCatalogerConfig{},
 					Python:      python.CatalogerConfig{},
-					Java:        java.ArchiveCatalogerConfig{},
+					JavaArchive: java.ArchiveCatalogerConfig{},
 				},
 				FilesConfig: filecataloging.Config{
 					Selection: file.OwnedFilesSelection,
@@ -89,7 +89,7 @@ func Test_configurationAuditTrail_MarshalJSON(t *testing.T) {
 			//      "search-local-mod-cache-licenses": false,
 			//      "search-remote-licenses": false
 			//    },
-			//    "java": {
+			//    "java-archive": {
 			//      "include-indexed-archives": false,
 			//      "include-unindexed-archives": false,
 			//      "maven-base-url": "",
@@ -104,7 +104,7 @@ func Test_configurationAuditTrail_MarshalJSON(t *testing.T) {
 			//    }
 			//  }
 			//}
-			want: `{"catalog":{"data-generation":{"generate-cpes":false,"guess-language-from-purl":false},"relationships":{"exclude-binary-packages-with-file-ownership-overlap":false,"file-ownership":false,"file-ownership-overlap":false},"search":{"scope":"squashed"}},"catalogers":{"requested":["requested"],"used":["used"]},"files":{"hashers":["sha-256"],"selection":"owned-files"},"packages":{"golang":{"local-mod-cache-dir":"","search-local-mod-cache-licenses":false,"search-remote-licenses":false},"java":{"include-indexed-archives":false,"include-unindexed-archives":false,"maven-base-url":"","max-parent-recursive-depth":0,"use-network":false},"linux-kernel":{"catalog-modules":false},"python":{"guess-unpinned-requirements":false}}}`,
+			want: `{"catalog":{"data-generation":{"generate-cpes":false,"guess-language-from-purl":false},"relationships":{"exclude-binary-packages-with-file-ownership-overlap":false,"file-ownership":false,"file-ownership-overlap":false},"search":{"scope":"squashed"}},"catalogers":{"requested":["requested"],"used":["used"]},"files":{"hashers":["sha-256"],"selection":"owned-files"},"packages":{"golang":{"local-mod-cache-dir":"","search-local-mod-cache-licenses":false,"search-remote-licenses":false},"java-archive":{"include-indexed-archives":false,"include-unindexed-archives":false,"maven-base-url":"","max-parent-recursive-depth":0,"use-network":false},"linux-kernel":{"catalog-modules":false},"python":{"guess-unpinned-requirements":false}}}`,
 		},
 	}
 	for _, tt := range tests {

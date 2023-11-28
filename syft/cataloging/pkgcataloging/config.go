@@ -11,7 +11,7 @@ type Config struct {
 	Golang      golang.CatalogerConfig            `yaml:"golang" json:"golang" mapstructure:"golang"`
 	LinuxKernel kernel.LinuxKernelCatalogerConfig `yaml:"linux-kernel" json:"linux-kernel" mapstructure:"linux-kernel"`
 	Python      python.CatalogerConfig            `yaml:"python" json:"python" mapstructure:"python"`
-	Java        java.ArchiveCatalogerConfig       `yaml:"java" json:"java" mapstructure:"java"`
+	JavaArchive java.ArchiveCatalogerConfig       `yaml:"java-archive" json:"java-archive" mapstructure:"java-archive"`
 }
 
 func DefaultConfig() Config {
@@ -19,7 +19,7 @@ func DefaultConfig() Config {
 		Golang:      golang.DefaultCatalogerConfig(),
 		LinuxKernel: kernel.DefaultLinuxCatalogerConfig(),
 		Python:      python.DefaultCatalogerConfig(),
-		Java:        java.DefaultArchiveCatalogerConfig(),
+		JavaArchive: java.DefaultArchiveCatalogerConfig(),
 	}
 }
 
@@ -38,7 +38,7 @@ func (cfg Config) WithPythonConfig(pythonConfig python.CatalogerConfig) Config {
 	return cfg
 }
 
-func (cfg Config) WithJavaConfig(javaConfig java.ArchiveCatalogerConfig) Config {
-	cfg.Java = javaConfig
+func (cfg Config) WithJavaArchiveConfig(javaConfig java.ArchiveCatalogerConfig) Config {
+	cfg.JavaArchive = javaConfig
 	return cfg
 }

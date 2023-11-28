@@ -91,7 +91,7 @@ func DefaultPackageTaskFactories() PackageTaskFactories {
 		),
 		newPackageTaskFactory(
 			func(cfg cataloging.Config, pkgCfg pkgcataloging.Config) pkg.Cataloger {
-				return java.NewArchiveCataloger(pkgCfg.Java)
+				return java.NewArchiveCataloger(pkgCfg.JavaArchive)
 			},
 			DirectoryTag, InstalledTag, ImageTag, LanguageTag, "java", "maven",
 		),

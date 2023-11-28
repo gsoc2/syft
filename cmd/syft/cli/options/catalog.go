@@ -120,7 +120,7 @@ func (cfg Catalog) ToPackagesConfig() pkgcataloging.Config {
 		Python: python.CatalogerConfig{
 			GuessUnpinnedRequirements: cfg.Python.GuessUnpinnedRequirements,
 		},
-		Java: java.DefaultArchiveCatalogerConfig().
+		JavaArchive: java.DefaultArchiveCatalogerConfig().
 			WithUseNetwork(cfg.Java.UseNetwork).
 			WithMavenBaseURL(cfg.Java.MavenURL).
 			WithArchiveTraversal(archiveSearch, cfg.Java.MaxParentRecursiveDepth),
