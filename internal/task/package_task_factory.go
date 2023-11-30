@@ -67,16 +67,17 @@ func (f PackageTaskFactories) Tasks(cfg cataloging.Config, pkgCfg pkgcataloging.
 //nolint:funlen
 func NewPackageTask(cfg cataloging.Config, c pkg.Cataloger, tags ...string) Task {
 	fn := func(resolver file.Resolver, sbom SBOMBuilder) error {
-		log.WithFields("name", c.Name()).Trace("starting package cataloger")
+		catalogerName := c.Name()
+		log.WithFields("name", catalogerName).Trace("starting package cataloger")
 
 		info := monitor.GenericTask{
 			Title: monitor.Title{
-				Default: prettyName(c.Name()),
+				Default: prettyName(catalogerName),
 			},
-			ID:            "",
+			ID:            catalogerName,
+			ParentID:      monitor.PackageCatalogingTaskID,
 			Context:       "",
 			HideOnSuccess: true,
-			ParentID:      monitor.PackageCatalogingTaskID,
 		}
 
 		t := bus.StartCatalogerTask(info, -1, "")
