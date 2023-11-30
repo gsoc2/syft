@@ -91,9 +91,15 @@ func (c CreateSBOMConfig) WithCatalogerSelectionBasedOnSource(value bool) Create
 func (c CreateSBOMConfig) WithCatalogerSelection(expressions ...string) CreateSBOMConfig {
 	c.CatalogerSelectionExpressions = nil
 	for _, expr := range expressions {
+		var cleaned []string
 		for _, tag := range strings.Split(expr, ",") {
-			c.CatalogerSelectionExpressions = append(c.CatalogerSelectionExpressions, strings.TrimSpace(tag))
+			tag = strings.TrimSpace(tag)
+			if tag == "" {
+				continue
+			}
+			cleaned = append(cleaned, tag)
 		}
+		c.CatalogerSelectionExpressions = append(c.CatalogerSelectionExpressions, strings.Join(cleaned, ","))
 	}
 
 	return c

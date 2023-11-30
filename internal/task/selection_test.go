@@ -126,6 +126,18 @@ func Test_parseExpressionsWithBasis(t *testing.T) {
 				},
 			},
 		},
+		{
+			name:  "basis with multiple additional intersections",
+			basis: "image",
+			expressions: []string{
+				"&javascript,package",
+			},
+			want: []expressionNode{
+				{
+					Requirements: []string{"image", "javascript", "package"},
+				},
+			},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
