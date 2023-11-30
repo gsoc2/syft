@@ -155,7 +155,17 @@ If docker is not present, then the Podman daemon is attempted next, followed by 
 
 This default behavior can be overridden with the `default-image-pull-source` configuration option (See [Configuration](https://github.com/anchore/syft#configuration) for more details).
 
-### Cataloger selection
+
+### File selection
+
+By default, Syft will catalog file details and digests for files that are owned by discovered packages. You can change this behavior by using the `SYFT_FILE_METADATA_SELECTION` environment variable or the `file.metadata.selection` configuration option. The options are:
+
+- `all-files`: capture all files from the search space
+- `owned-files`: capture only files owned by packages (default)
+- `no-files`: disable capturing any file information
+
+
+### Package cataloger selection
 
 Syft uses different default sets of catalogers depending on what is being scanned: a container image or a directory on disk. 
 
