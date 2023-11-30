@@ -8,7 +8,7 @@ import (
 	tea "github.com/charmbracelet/bubbletea"
 )
 
-func runModel(t testing.TB, m tea.Model, iterations int, message tea.Msg, h ...*sync.WaitGroup) string {
+func runModel(t testing.TB, m tea.Model, iterations int, message tea.Msg, h ...*sync.WaitGroup) tea.Model {
 	t.Helper()
 	if iterations == 0 {
 		iterations = 1
@@ -36,7 +36,7 @@ func runModel(t testing.TB, m tea.Model, iterations int, message tea.Msg, h ...*
 		cmd = tea.Batch(nextCmds...)
 	}
 
-	return m.View()
+	return m
 }
 
 func flatten(ps ...tea.Msg) (msgs []tea.Msg) {

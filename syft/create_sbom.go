@@ -9,6 +9,7 @@ import (
 	"github.com/scylladb/go-set/strset"
 	"github.com/wagoodman/go-progress"
 
+	"github.com/anchore/syft/internal/bus"
 	"github.com/anchore/syft/internal/task"
 	"github.com/anchore/syft/syft/artifact"
 	"github.com/anchore/syft/syft/event/monitor"
@@ -108,7 +109,7 @@ func CreateSBOM(src source.Source, cfg CreateSBOMConfig) (*sbom.SBOM, error) {
 	return &s, nil
 }
 
-func monitorPackageCatalogingTask() *monitor.CatalogerTask {
+func monitorPackageCatalogingTask() *monitor.CatalogerTaskProgress {
 	info := monitor.GenericTask{
 		Title: monitor.Title{
 			Default: "Packages",
@@ -118,10 +119,10 @@ func monitorPackageCatalogingTask() *monitor.CatalogerTask {
 		ParentID:      monitor.TopLevelCatalogingTaskID,
 	}
 
-	return monitor.StartCatalogerTask(info, -1, "")
+	return bus.StartCatalogerTask(info, -1, "")
 }
 
-func monitorCatalogingTask(srcID artifact.ID, tasks [][]task.Task) *monitor.CatalogerTask {
+func monitorCatalogingTask(srcID artifact.ID, tasks [][]task.Task) *monitor.CatalogerTaskProgress {
 	info := monitor.GenericTask{
 		Title: monitor.Title{
 			Default:      "Catalog contents",
@@ -138,7 +139,7 @@ func monitorCatalogingTask(srcID artifact.ID, tasks [][]task.Task) *monitor.Cata
 		length += int64(len(tg))
 	}
 
-	return monitor.StartCatalogerTask(info, length, "")
+	return bus.StartCatalogerTask(info, length, "")
 }
 
 func removeRelationshipsByID(relationships []artifact.Relationship, id artifact.ID) []artifact.Relationship {

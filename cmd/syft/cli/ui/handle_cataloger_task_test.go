@@ -26,7 +26,7 @@ func TestHandler_handleCatalogerTaskStarted(t *testing.T) {
 		{
 			name: "cataloging task in progress",
 			eventFn: func(t *testing.T) partybus.Event {
-				value := &monitor.CatalogerTask{
+				value := &monitor.CatalogerTaskProgress{
 					AtomicStage: progress.NewAtomicStage("some stage"),
 					Manual:      progress.NewManual(100),
 				}
@@ -48,7 +48,7 @@ func TestHandler_handleCatalogerTaskStarted(t *testing.T) {
 		{
 			name: "cataloging sub task in progress",
 			eventFn: func(t *testing.T) partybus.Event {
-				value := &monitor.CatalogerTask{
+				value := &monitor.CatalogerTaskProgress{
 					AtomicStage: progress.NewAtomicStage("some stage"),
 					Manual:      progress.NewManual(100),
 				}
@@ -62,7 +62,7 @@ func TestHandler_handleCatalogerTaskStarted(t *testing.T) {
 						HideOnSuccess:      false,
 						HideStageOnSuccess: false,
 						ID:                 "my-id",
-						ParentID:           monitor.TopLevelCatalogingTaskID,
+						ParentID:           "top-level-task",
 					},
 					Value: value,
 				}
@@ -71,7 +71,7 @@ func TestHandler_handleCatalogerTaskStarted(t *testing.T) {
 		{
 			name: "cataloging sub task complete",
 			eventFn: func(t *testing.T) partybus.Event {
-				value := &monitor.CatalogerTask{
+				value := &monitor.CatalogerTaskProgress{
 					AtomicStage: progress.NewAtomicStage("some stage"),
 					Manual:      progress.NewManual(100),
 				}
@@ -85,7 +85,7 @@ func TestHandler_handleCatalogerTaskStarted(t *testing.T) {
 						HideOnSuccess:      false,
 						HideStageOnSuccess: false,
 						ID:                 "my-id",
-						ParentID:           monitor.TopLevelCatalogingTaskID,
+						ParentID:           "top-level-task",
 					},
 					Value: value,
 				}
@@ -94,7 +94,7 @@ func TestHandler_handleCatalogerTaskStarted(t *testing.T) {
 		{
 			name: "cataloging sub task complete -- hide stage",
 			eventFn: func(t *testing.T) partybus.Event {
-				value := &monitor.CatalogerTask{
+				value := &monitor.CatalogerTaskProgress{
 					AtomicStage: progress.NewAtomicStage("some stage"),
 					Manual:      progress.NewManual(100),
 				}
@@ -108,7 +108,7 @@ func TestHandler_handleCatalogerTaskStarted(t *testing.T) {
 						HideOnSuccess:      false,
 						HideStageOnSuccess: true,
 						ID:                 "my-id",
-						ParentID:           monitor.TopLevelCatalogingTaskID,
+						ParentID:           "top-level-task",
 					},
 					Value: value,
 				}
@@ -117,7 +117,7 @@ func TestHandler_handleCatalogerTaskStarted(t *testing.T) {
 		{
 			name: "cataloging sub task complete with removal",
 			eventFn: func(t *testing.T) partybus.Event {
-				value := &monitor.CatalogerTask{
+				value := &monitor.CatalogerTaskProgress{
 					AtomicStage: progress.NewAtomicStage("some stage"),
 					Manual:      progress.NewManual(100),
 				}
@@ -131,7 +131,7 @@ func TestHandler_handleCatalogerTaskStarted(t *testing.T) {
 						HideOnSuccess:      true,
 						HideStageOnSuccess: false,
 						ID:                 "my-id",
-						ParentID:           monitor.TopLevelCatalogingTaskID,
+						ParentID:           "top-level-task",
 					},
 					Value: value,
 				}
@@ -140,6 +140,11 @@ func TestHandler_handleCatalogerTaskStarted(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			// need to be able to get the initial newCatalogerTaskRowEvent + initialize the nested taskprogress model
+			if tt.iterations == 0 {
+				tt.iterations = 2
+			}
+
 			e := tt.eventFn(t)
 			handler := New(DefaultHandlerConfig())
 			handler.WindowSize = tea.WindowSizeMsg{
@@ -153,11 +158,11 @@ func TestHandler_handleCatalogerTaskStarted(t *testing.T) {
 					WhileRunning: "Cataloging contents",
 					OnSuccess:    "Cataloged contents",
 				},
-				ID: monitor.TopLevelCatalogingTaskID,
+				ID: "top-level-task",
 			}
 
 			// note: this line / event is not under test, only needed to show a sub status
-			kickoffEvent := &monitor.CatalogerTask{
+			kickoffEvent := &monitor.CatalogerTaskProgress{
 				AtomicStage: progress.NewAtomicStage(""),
 				Manual:      progress.NewManual(-1),
 			}
@@ -173,16 +178,19 @@ func TestHandler_handleCatalogerTaskStarted(t *testing.T) {
 			require.NotNil(t, cmd)
 			model := models[0]
 
-			tr, ok := model.(*catalogerTaskState)
+			tr, ok := model.(*catalogerTaskModel)
 			require.True(t, ok)
 
-			got := runModel(t, tr, tt.iterations, cmd())
+			gotModel := runModel(t, tr, tt.iterations, cmd())
 
 			models, cmd = handler.Handle(e)
 			require.Len(t, models, 0)
 			require.NotNil(t, cmd)
 
-			got = runModel(t, tr, tt.iterations, cmd())
+			gotModel = runModel(t, gotModel, tt.iterations, cmd())
+
+			got := gotModel.View()
+
 			t.Log(got)
 			snaps.MatchSnapshot(t, got)
 		})

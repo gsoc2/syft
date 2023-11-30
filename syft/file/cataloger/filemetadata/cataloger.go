@@ -5,6 +5,7 @@ import (
 
 	"github.com/dustin/go-humanize"
 
+	"github.com/anchore/syft/internal/bus"
 	"github.com/anchore/syft/internal/log"
 	"github.com/anchore/syft/syft/event/monitor"
 	"github.com/anchore/syft/syft/file"
@@ -20,7 +21,6 @@ func NewCataloger() *Cataloger {
 func (i *Cataloger) Catalog(resolver file.Resolver, coordinates ...file.Coordinates) (map[file.Coordinates]file.Metadata, error) {
 	results := make(map[file.Coordinates]file.Metadata)
 	var locations <-chan file.Location
-
 	if len(coordinates) == 0 {
 		locations = resolver.AllLocations()
 	} else {
@@ -46,7 +46,7 @@ func (i *Cataloger) Catalog(resolver file.Resolver, coordinates ...file.Coordina
 	prog := metadataCatalogingProgress(int64(len(locations)))
 	for location := range locations {
 		prog.Increment()
-		prog.AtomicStage.Set(location.RealPath)
+		prog.AtomicStage.Set(location.Path())
 
 		metadata, err := resolver.FileMetadataByLocation(location)
 		if err != nil {
@@ -64,7 +64,7 @@ func (i *Cataloger) Catalog(resolver file.Resolver, coordinates ...file.Coordina
 	return results, nil
 }
 
-func metadataCatalogingProgress(locations int64) *monitor.CatalogerTask {
+func metadataCatalogingProgress(locations int64) *monitor.CatalogerTaskProgress {
 	info := monitor.GenericTask{
 		Title: monitor.Title{
 			Default: "File metadata",
@@ -72,5 +72,5 @@ func metadataCatalogingProgress(locations int64) *monitor.CatalogerTask {
 		ParentID: monitor.TopLevelCatalogingTaskID,
 	}
 
-	return monitor.StartCatalogerTask(info, locations, "")
+	return bus.StartCatalogerTask(info, locations, "")
 }

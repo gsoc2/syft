@@ -8,6 +8,7 @@ import (
 
 	"github.com/scylladb/go-set/strset"
 
+	"github.com/anchore/syft/internal/bus"
 	"github.com/anchore/syft/internal/log"
 	"github.com/anchore/syft/syft/artifact"
 	"github.com/anchore/syft/syft/cataloging"
@@ -76,10 +77,9 @@ func NewPackageTask(cfg cataloging.Config, c pkg.Cataloger, tags ...string) Task
 			Context:       "",
 			HideOnSuccess: true,
 			ParentID:      monitor.PackageCatalogingTaskID,
-			Hidden:        false,
 		}
 
-		t := monitor.StartCatalogerTask(info, -1, "")
+		t := bus.StartCatalogerTask(info, -1, "")
 
 		pkgs, relationships, err := c.Catalog(resolver)
 		if err != nil {

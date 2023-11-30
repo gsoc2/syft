@@ -14,78 +14,76 @@ import (
 	syftEventParsers "github.com/anchore/syft/syft/event/parsers"
 )
 
+// we standardize how rows are instantiated to ensure consistency in the appearance across the UI
 type taskModelFactory func(title taskprogress.Title, opts ...taskprogress.Option) taskprogress.Model
 
-var _ tea.Model = (*catalogerTaskState)(nil)
+var _ tea.Model = (*catalogerTaskModel)(nil)
 
-type catalogerTaskState struct {
+type catalogerTaskModel struct {
 	model        tree.Model
 	modelFactory taskModelFactory
 }
 
-func newCatalogerTaskState(f taskModelFactory) *catalogerTaskState {
+func newCatalogerTaskTreeModel(f taskModelFactory) *catalogerTaskModel {
 	t := tree.NewModel()
 	t.Padding = "   "
 	t.RootsWithoutPrefix = true
-	return &catalogerTaskState{
+	return &catalogerTaskModel{
 		modelFactory: f,
 		model:        t,
 	}
 }
 
-func (cts catalogerTaskState) Init() tea.Cmd {
+type newCatalogerTaskRowEvent struct {
+	info monitor.GenericTask
+	prog progress.StagedProgressable
+}
+
+func (cts catalogerTaskModel) Init() tea.Cmd {
 	return cts.model.Init()
 }
 
-func (cts *catalogerTaskState) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
-	return cts.model.Update(msg)
+func (cts catalogerTaskModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
+	event, ok := msg.(newCatalogerTaskRowEvent)
+	if !ok {
+		model, cmd := cts.model.Update(msg)
+		cts.model = model.(tree.Model)
+
+		return cts, cmd
+	}
+
+	info, prog := event.info, event.prog
+
+	tsk := cts.modelFactory(
+		taskprogress.Title{
+			Default: info.Title.Default,
+			Running: info.Title.WhileRunning,
+			Success: info.Title.OnSuccess,
+		},
+		taskprogress.WithStagedProgressable(prog),
+	)
+
+	if info.Context != "" {
+		tsk.Context = []string{info.Context}
+	}
+
+	tsk.HideOnSuccess = info.HideOnSuccess
+	tsk.HideStageOnSuccess = info.HideStageOnSuccess
+	tsk.HideProgressOnSuccess = true
+
+	if info.ParentID != "" {
+		tsk.TitleStyle = lipgloss.NewStyle()
+	}
+
+	if err := cts.model.Add(info.ParentID, info.ID, tsk); err != nil {
+		log.WithFields("error", err).Error("unable to add cataloger task to tree model")
+	}
+
+	return cts, tsk.Init()
 }
 
-func (cts catalogerTaskState) View() string {
+func (cts catalogerTaskModel) View() string {
 	return cts.model.View()
-}
-
-func (cts *catalogerTaskState) onCatalogerTaskStarted(info monitor.GenericTask, prog progress.StagedProgressable) tea.Cmd {
-	if info.ID == "" {
-		// ID is optional from the consumer perspective, but required internally
-		info.ID = uuid.Must(uuid.NewRandom()).String()
-	}
-
-	var cmd tea.Cmd
-
-	if !info.Hidden {
-		tsk := cts.modelFactory(
-			taskprogress.Title{
-				Default: info.Title.Default,
-				Running: info.Title.WhileRunning,
-				Success: info.Title.OnSuccess,
-			},
-			taskprogress.WithStagedProgressable(prog),
-		)
-
-		if info.Context != "" {
-			tsk.Context = []string{info.Context}
-		}
-
-		// TODO: this isn't ideal since the model stays around after it is no longer needed, but it works for now
-		tsk.HideOnSuccess = info.HideOnSuccess
-		tsk.HideStageOnSuccess = info.HideStageOnSuccess
-		tsk.HideProgressOnSuccess = true
-
-		if info.ParentID != "" {
-			tsk.TitleStyle = lipgloss.NewStyle()
-			// TODO: this is a hack to get the spinner to not show up, but ideally the component would support making the spinner optional
-			// tsk.Spinner.Spinner.Frames = []string{" "}
-		}
-
-		cmd = tea.Batch(cmd, tsk.Init())
-
-		if err := cts.model.Add(info.ParentID, info.ID, tsk); err != nil {
-			log.WithFields("error", err).Error("unable to add cataloger task to tree model")
-		}
-	}
-
-	return cmd
 }
 
 func (m *Handler) handleCatalogerTaskStarted(e partybus.Event) ([]tea.Model, tea.Cmd) {
@@ -96,12 +94,30 @@ func (m *Handler) handleCatalogerTaskStarted(e partybus.Event) ([]tea.Model, tea
 	}
 
 	var models []tea.Model
-	if m.catalogerTasks == nil {
-		m.catalogerTasks = newCatalogerTaskState(m.newTaskProgress)
-		models = append(models, m.catalogerTasks)
+
+	// only create the new cataloger task tree once to manage all cataloger task events
+	m.onNewCatalogerTask.Do(func() {
+		models = append(models, newCatalogerTaskTreeModel(m.newTaskProgress))
+	})
+
+	// we need to update the cataloger task model with a new row. We should never update the model outside of the
+	// bubbletea update-render event loop. Instead, we return a command that will be executed by the bubbletea runtime,
+	// producing a message that is passed to the cataloger task model. This is the prescribed way to update models
+	// in bubbletea.
+
+	if info.ID == "" {
+		// ID is optional from the consumer perspective, but required internally
+		info.ID = uuid.Must(uuid.NewRandom()).String()
 	}
 
-	cmd := m.catalogerTasks.onCatalogerTaskStarted(*info, mon)
+	cmd := func() tea.Msg {
+		// this message will cause the cataloger task model to add a new row to the output based on the given task
+		// information and progress data.
+		return newCatalogerTaskRowEvent{
+			info: *info,
+			prog: mon,
+		}
+	}
 
 	return models, cmd
 }

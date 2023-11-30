@@ -16,7 +16,7 @@ func Test_TaskExecutor_PanicHandling(t *testing.T) {
 	})
 	ex := NewTaskExecutor([]Task{tsk}, 1)
 
-	err := ex.Execute(nil, nil, &monitor.CatalogerTask{
+	err := ex.Execute(nil, nil, &monitor.CatalogerTaskProgress{
 		Manual: progress.NewManual(-1),
 	})
 

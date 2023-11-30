@@ -31,7 +31,6 @@ type GenericTask struct {
 	// optional fields
 
 	ID       string
-	Context  string
 	ParentID string
-	Hidden   bool
+	Context  string
 }

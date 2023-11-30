@@ -30,7 +30,7 @@ func NewTaskExecutor(tasks []Task, numWorkers int) *Executor {
 	return p
 }
 
-func (p *Executor) Execute(resolver file.Resolver, s SBOMBuilder, prog *monitor.CatalogerTask) error {
+func (p *Executor) Execute(resolver file.Resolver, s SBOMBuilder, prog *monitor.CatalogerTaskProgress) error {
 	var errs error
 	wg := &sync.WaitGroup{}
 	for i := 0; i < p.numWorkers; i++ {
