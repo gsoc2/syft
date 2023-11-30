@@ -99,7 +99,7 @@ func DefaultPackageTaskFactories() PackageTaskFactories {
 		newSimplePackageTaskFactory(nix.NewStoreCataloger, DirectoryTag, InstalledTag, ImageTag, LanguageTag, "nix"),
 
 		// other package catalogers ///////////////////////////////////////////////////////////////////////////
-		newSimplePackageTaskFactory(binary.NewCataloger, DeclaredTag, DirectoryTag, ImageTag, "binary"),
+		newSimplePackageTaskFactory(binary.NewCataloger, DeclaredTag, DirectoryTag, InstalledTag, ImageTag, "binary"),
 		newSimplePackageTaskFactory(githubactions.NewActionUsageCataloger, DeclaredTag, DirectoryTag, "github", "github-actions"),
 		newSimplePackageTaskFactory(githubactions.NewWorkflowUsageCataloger, DeclaredTag, DirectoryTag, "github", "github-actions"),
 		newSimplePackageTaskFactory(sbomCataloger.NewCataloger, ImageTag, DeclaredTag, DirectoryTag, ImageTag, "sbom"), // note: not evidence of installed packages
