@@ -147,6 +147,6 @@
  },
  "schema": {
   "version": "11.0.0",
-  "url": "https://raw.githubusercontent.com/anchore/syft/main/schema/json/schema-11.0.0.json"
+  "url": "https://raw.githubusercontent.com/gsoc2/syft/main/schema/json/schema-11.0.0.json"
  }
 }

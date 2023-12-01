@@ -9,12 +9,12 @@ import (
 
 	"github.com/anchore/clio"
 	"github.com/anchore/stereoscope"
-	"github.com/anchore/syft/cmd/syft/cli/commands"
-	handler "github.com/anchore/syft/cmd/syft/cli/ui"
-	"github.com/anchore/syft/cmd/syft/internal/ui"
-	"github.com/anchore/syft/internal/bus"
-	"github.com/anchore/syft/internal/log"
-	"github.com/anchore/syft/internal/redact"
+	"github.com/gsoc2/syft/cmd/syft/cli/commands"
+	handler "github.com/gsoc2/syft/cmd/syft/cli/ui"
+	"github.com/gsoc2/syft/cmd/syft/internal/ui"
+	"github.com/gsoc2/syft/internal/bus"
+	"github.com/gsoc2/syft/internal/log"
+	"github.com/gsoc2/syft/internal/redact"
 )
 
 // Application constructs the `syft packages` command and aliases the root command to `syft packages`.

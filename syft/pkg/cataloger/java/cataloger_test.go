@@ -3,8 +3,8 @@ package java
 import (
 	"testing"
 
-	"github.com/anchore/syft/syft/cataloging"
-	"github.com/anchore/syft/syft/pkg/cataloger/internal/pkgtest"
+	"github.com/gsoc2/syft/syft/cataloging"
+	"github.com/gsoc2/syft/syft/pkg/cataloger/internal/pkgtest"
 )
 
 func Test_ArchiveCataloger_Globs(t *testing.T) {

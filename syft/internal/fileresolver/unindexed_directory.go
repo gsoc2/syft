@@ -15,8 +15,8 @@ import (
 	"github.com/mitchellh/go-homedir"
 	"github.com/spf13/afero"
 
-	"github.com/anchore/syft/internal/log"
-	"github.com/anchore/syft/syft/file"
+	"github.com/gsoc2/syft/internal/log"
+	"github.com/gsoc2/syft/syft/file"
 )
 
 var _ file.Resolver = (*UnindexedDirectory)(nil)

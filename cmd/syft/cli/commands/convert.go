@@ -8,11 +8,11 @@ import (
 	"github.com/spf13/cobra"
 
 	"github.com/anchore/clio"
-	"github.com/anchore/syft/cmd/syft/cli/options"
-	"github.com/anchore/syft/cmd/syft/internal/ui"
-	"github.com/anchore/syft/internal"
-	"github.com/anchore/syft/internal/log"
-	"github.com/anchore/syft/syft/format"
+	"github.com/gsoc2/syft/cmd/syft/cli/options"
+	"github.com/gsoc2/syft/cmd/syft/internal/ui"
+	"github.com/gsoc2/syft/internal"
+	"github.com/gsoc2/syft/internal/log"
+	"github.com/gsoc2/syft/syft/format"
 )
 
 const (
@@ -40,7 +40,7 @@ func Convert(app clio.Application) *cobra.Command {
 	return app.SetupCommand(&cobra.Command{
 		Use:   "convert [SOURCE-SBOM] -o [FORMAT]",
 		Short: "Convert between SBOM formats",
-		Long:  "[Experimental] Convert SBOM files to, and from, SPDX, CycloneDX and Syft's format. For more info about data loss between formats see https://github.com/anchore/syft#format-conversion-experimental",
+		Long:  "[Experimental] Convert SBOM files to, and from, SPDX, CycloneDX and Syft's format. For more info about data loss between formats see https://github.com/gsoc2/syft#format-conversion-experimental",
 		Example: internal.Tprintf(convertExample, map[string]interface{}{
 			"appName": id.Name,
 			"command": "convert",

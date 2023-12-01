@@ -2,8 +2,8 @@ package ruby
 
 import (
 	"github.com/anchore/packageurl-go"
-	"github.com/anchore/syft/syft/file"
-	"github.com/anchore/syft/syft/pkg"
+	"github.com/gsoc2/syft/syft/file"
+	"github.com/gsoc2/syft/syft/pkg"
 )
 
 func newGemfileLockPackage(name, version string, locations ...file.Location) pkg.Package {

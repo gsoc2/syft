@@ -5,8 +5,8 @@ import (
 	"io"
 	"strings"
 
-	"github.com/anchore/syft/syft/file"
-	"github.com/anchore/syft/syft/pkg"
+	"github.com/gsoc2/syft/syft/file"
+	"github.com/gsoc2/syft/syft/pkg"
 )
 
 func parseDpkgMD5Info(reader io.Reader) (findings []pkg.DpkgFileRecord) {

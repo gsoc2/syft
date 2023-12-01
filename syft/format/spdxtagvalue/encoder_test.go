@@ -8,10 +8,10 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/anchore/syft/syft/format/internal/testutil"
-	"github.com/anchore/syft/syft/pkg"
-	"github.com/anchore/syft/syft/sbom"
-	"github.com/anchore/syft/syft/source"
+	"github.com/gsoc2/syft/syft/format/internal/testutil"
+	"github.com/gsoc2/syft/syft/pkg"
+	"github.com/gsoc2/syft/syft/sbom"
+	"github.com/gsoc2/syft/syft/source"
 )
 
 var updateSnapshot = flag.Bool("update-spdx-tv", false, "update the *.golden files for spdx-tv encoders")

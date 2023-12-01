@@ -3,7 +3,7 @@ package testutil
 import (
 	"testing"
 
-	"github.com/anchore/syft/syft/internal/packagemetadata"
+	"github.com/gsoc2/syft/syft/internal/packagemetadata"
 )
 
 type PackageMetadataCompletionTester struct {

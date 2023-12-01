@@ -8,12 +8,12 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/anchore/syft/internal"
-	"github.com/anchore/syft/syft/artifact"
-	"github.com/anchore/syft/syft/cpe"
-	"github.com/anchore/syft/syft/file"
-	"github.com/anchore/syft/syft/pkg"
-	"github.com/anchore/syft/syft/pkg/cataloger/generic"
+	"github.com/gsoc2/syft/internal"
+	"github.com/gsoc2/syft/syft/artifact"
+	"github.com/gsoc2/syft/syft/cpe"
+	"github.com/gsoc2/syft/syft/file"
+	"github.com/gsoc2/syft/syft/pkg"
+	"github.com/gsoc2/syft/syft/pkg/cataloger/generic"
 )
 
 var versionCandidateGroups = regexp.MustCompile(`(?P<version>\d+(\.\d+)?(\.\d+)?)(?P<candidate>\w*)`)

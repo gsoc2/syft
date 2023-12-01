@@ -7,9 +7,9 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/anchore/syft/syft/artifact"
-	"github.com/anchore/syft/syft/file"
-	"github.com/anchore/syft/syft/license"
+	"github.com/gsoc2/syft/syft/artifact"
+	"github.com/gsoc2/syft/syft/file"
+	"github.com/gsoc2/syft/syft/license"
 )
 
 func Test_Hash(t *testing.T) {
@@ -55,13 +55,13 @@ func Test_Sort(t *testing.T) {
 			name: "multiple",
 			licenses: []License{
 				NewLicenseFromLocations("MIT", file.NewLocation("place!")),
-				NewLicenseFromURLs("MIT", "https://github.com/anchore/syft/blob/main/LICENSE"),
+				NewLicenseFromURLs("MIT", "https://github.com/gsoc2/syft/blob/main/LICENSE"),
 				NewLicenseFromLocations("Apache", file.NewLocation("area!")),
 				NewLicenseFromLocations("gpl2+", file.NewLocation("area!")),
 			},
 			expected: Licenses{
 				NewLicenseFromLocations("Apache", file.NewLocation("area!")),
-				NewLicenseFromURLs("MIT", "https://github.com/anchore/syft/blob/main/LICENSE"),
+				NewLicenseFromURLs("MIT", "https://github.com/gsoc2/syft/blob/main/LICENSE"),
 				NewLicenseFromLocations("MIT", file.NewLocation("place!")),
 				NewLicenseFromLocations("gpl2+", file.NewLocation("area!")),
 			},

@@ -9,7 +9,7 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"github.com/anchore/stereoscope/pkg/imagetest"
-	"github.com/anchore/syft/syft/format/cyclonedxjson"
+	"github.com/gsoc2/syft/syft/format/cyclonedxjson"
 )
 
 // We have schema validation mechanims in schema/cyclonedx/

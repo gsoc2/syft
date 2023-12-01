@@ -1,8 +1,8 @@
 package file
 
 import (
-	"github.com/anchore/syft/internal/log"
-	"github.com/anchore/syft/syft/license"
+	"github.com/gsoc2/syft/internal/log"
+	"github.com/gsoc2/syft/syft/license"
 )
 
 type License struct {

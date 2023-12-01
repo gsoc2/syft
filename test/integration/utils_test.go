@@ -6,10 +6,10 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"github.com/anchore/stereoscope/pkg/imagetest"
-	"github.com/anchore/syft/syft"
-	"github.com/anchore/syft/syft/pkg/cataloger"
-	"github.com/anchore/syft/syft/sbom"
-	"github.com/anchore/syft/syft/source"
+	"github.com/gsoc2/syft/syft"
+	"github.com/gsoc2/syft/syft/pkg/cataloger"
+	"github.com/gsoc2/syft/syft/sbom"
+	"github.com/gsoc2/syft/syft/source"
 )
 
 func catalogFixtureImage(t *testing.T, fixtureImageName string, scope source.Scope, catalogerCfg []string) (sbom.SBOM, source.Source) {

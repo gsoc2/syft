@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/anchore/syft/internal/spdxlicense"
-	"github.com/anchore/syft/syft/license"
-	"github.com/anchore/syft/syft/pkg"
+	"github.com/gsoc2/syft/internal/spdxlicense"
+	"github.com/gsoc2/syft/syft/license"
+	"github.com/gsoc2/syft/syft/pkg"
 )
 
 func License(p pkg.Package) (concluded, declared string) {

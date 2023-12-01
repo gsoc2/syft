@@ -4,10 +4,10 @@ Package binary provides a concrete Cataloger implementations for surfacing possi
 package binary
 
 import (
-	"github.com/anchore/syft/internal/log"
-	"github.com/anchore/syft/syft/artifact"
-	"github.com/anchore/syft/syft/file"
-	"github.com/anchore/syft/syft/pkg"
+	"github.com/gsoc2/syft/internal/log"
+	"github.com/gsoc2/syft/syft/artifact"
+	"github.com/gsoc2/syft/syft/file"
+	"github.com/gsoc2/syft/syft/pkg"
 )
 
 const catalogerName = "binary-cataloger"

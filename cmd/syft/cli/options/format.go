@@ -6,16 +6,16 @@ import (
 	"github.com/hashicorp/go-multierror"
 
 	"github.com/anchore/clio"
-	"github.com/anchore/syft/syft/format/cyclonedxjson"
-	"github.com/anchore/syft/syft/format/cyclonedxxml"
-	"github.com/anchore/syft/syft/format/github"
-	"github.com/anchore/syft/syft/format/spdxjson"
-	"github.com/anchore/syft/syft/format/spdxtagvalue"
-	"github.com/anchore/syft/syft/format/syftjson"
-	"github.com/anchore/syft/syft/format/table"
-	"github.com/anchore/syft/syft/format/template"
-	"github.com/anchore/syft/syft/format/text"
-	"github.com/anchore/syft/syft/sbom"
+	"github.com/gsoc2/syft/syft/format/cyclonedxjson"
+	"github.com/gsoc2/syft/syft/format/cyclonedxxml"
+	"github.com/gsoc2/syft/syft/format/github"
+	"github.com/gsoc2/syft/syft/format/spdxjson"
+	"github.com/gsoc2/syft/syft/format/spdxtagvalue"
+	"github.com/gsoc2/syft/syft/format/syftjson"
+	"github.com/gsoc2/syft/syft/format/table"
+	"github.com/gsoc2/syft/syft/format/template"
+	"github.com/gsoc2/syft/syft/format/text"
+	"github.com/gsoc2/syft/syft/sbom"
 )
 
 var _ clio.PostLoader = (*Format)(nil)

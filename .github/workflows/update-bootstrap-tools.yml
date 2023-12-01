@@ -11,7 +11,7 @@ permissions:
 jobs:
   update-bootstrap-tools:
     runs-on: ubuntu-latest
-    if: github.repository == 'anchore/syft' # only run for main repo
+    if: github.repository == 'gsoc2/syft' # only run for main repo
     steps:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 #v4.1.1
 

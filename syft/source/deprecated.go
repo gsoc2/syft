@@ -5,7 +5,7 @@ import (
 
 	stereoscopeFile "github.com/anchore/stereoscope/pkg/file"
 	"github.com/anchore/stereoscope/pkg/image"
-	"github.com/anchore/syft/syft/file"
+	"github.com/gsoc2/syft/syft/file"
 )
 
 // Deprecated: use file.Metadata instead

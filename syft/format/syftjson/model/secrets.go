@@ -1,7 +1,7 @@
 package model
 
 import (
-	"github.com/anchore/syft/syft/file"
+	"github.com/gsoc2/syft/syft/file"
 )
 
 type Secrets struct {

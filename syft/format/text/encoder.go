@@ -5,8 +5,8 @@ import (
 	"io"
 	"text/tabwriter"
 
-	"github.com/anchore/syft/syft/sbom"
-	"github.com/anchore/syft/syft/source"
+	"github.com/gsoc2/syft/syft/sbom"
+	"github.com/gsoc2/syft/syft/source"
 )
 
 const ID sbom.FormatID = "syft-text"

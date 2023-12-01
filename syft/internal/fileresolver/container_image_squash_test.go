@@ -12,7 +12,7 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"github.com/anchore/stereoscope/pkg/imagetest"
-	"github.com/anchore/syft/syft/file"
+	"github.com/gsoc2/syft/syft/file"
 )
 
 func TestImageSquashResolver_FilesByPath(t *testing.T) {

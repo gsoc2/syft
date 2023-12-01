@@ -4,8 +4,8 @@ Package cpp provides a concrete Cataloger implementations for the C/C++ language
 package cpp
 
 import (
-	"github.com/anchore/syft/syft/pkg"
-	"github.com/anchore/syft/syft/pkg/cataloger/generic"
+	"github.com/gsoc2/syft/syft/pkg"
+	"github.com/gsoc2/syft/syft/pkg/cataloger/generic"
 )
 
 // NewConanCataloger returns a new C/C++ conanfile.txt and conan.lock cataloger object.

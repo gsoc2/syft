@@ -11,14 +11,14 @@ import (
 
 	"github.com/anchore/clio"
 	"github.com/anchore/fangs"
-	"github.com/anchore/syft/internal/log"
-	"github.com/anchore/syft/syft/cataloging"
-	"github.com/anchore/syft/syft/pkg/cataloger"
-	golangCataloger "github.com/anchore/syft/syft/pkg/cataloger/golang"
-	javaCataloger "github.com/anchore/syft/syft/pkg/cataloger/java"
-	"github.com/anchore/syft/syft/pkg/cataloger/kernel"
-	pythonCataloger "github.com/anchore/syft/syft/pkg/cataloger/python"
-	"github.com/anchore/syft/syft/source"
+	"github.com/gsoc2/syft/internal/log"
+	"github.com/gsoc2/syft/syft/cataloging"
+	"github.com/gsoc2/syft/syft/pkg/cataloger"
+	golangCataloger "github.com/gsoc2/syft/syft/pkg/cataloger/golang"
+	javaCataloger "github.com/gsoc2/syft/syft/pkg/cataloger/java"
+	"github.com/gsoc2/syft/syft/pkg/cataloger/kernel"
+	pythonCataloger "github.com/gsoc2/syft/syft/pkg/cataloger/python"
+	"github.com/gsoc2/syft/syft/source"
 )
 
 type Catalog struct {

@@ -5,9 +5,9 @@ import (
 	"github.com/wagoodman/go-progress"
 
 	"github.com/anchore/clio"
-	"github.com/anchore/syft/internal/redact"
-	"github.com/anchore/syft/syft/event"
-	"github.com/anchore/syft/syft/event/monitor"
+	"github.com/gsoc2/syft/internal/redact"
+	"github.com/gsoc2/syft/syft/event"
+	"github.com/gsoc2/syft/syft/event/monitor"
 )
 
 func Exit() {

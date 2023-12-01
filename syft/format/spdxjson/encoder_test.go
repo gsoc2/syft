@@ -9,10 +9,10 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/anchore/syft/syft/format/internal/spdxutil"
-	"github.com/anchore/syft/syft/format/internal/testutil"
-	"github.com/anchore/syft/syft/pkg"
-	"github.com/anchore/syft/syft/sbom"
+	"github.com/gsoc2/syft/syft/format/internal/spdxutil"
+	"github.com/gsoc2/syft/syft/format/internal/testutil"
+	"github.com/gsoc2/syft/syft/pkg"
+	"github.com/gsoc2/syft/syft/sbom"
 )
 
 var updateSnapshot = flag.Bool("update-spdx-json", false, "update the *.golden files for spdx-json encoders")

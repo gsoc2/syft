@@ -7,10 +7,10 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/anchore/syft/syft/format/syftjson"
-	syftjsonModel "github.com/anchore/syft/syft/format/syftjson/model"
-	"github.com/anchore/syft/syft/pkg"
-	"github.com/anchore/syft/syft/source"
+	"github.com/gsoc2/syft/syft/format/syftjson"
+	syftjsonModel "github.com/gsoc2/syft/syft/format/syftjson/model"
+	"github.com/gsoc2/syft/syft/pkg"
+	"github.com/gsoc2/syft/syft/source"
 )
 
 func TestPackageOwnershipRelationships(t *testing.T) {

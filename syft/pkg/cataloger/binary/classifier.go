@@ -12,12 +12,12 @@ import (
 	"text/template"
 
 	"github.com/anchore/packageurl-go"
-	"github.com/anchore/syft/internal"
-	"github.com/anchore/syft/internal/log"
-	"github.com/anchore/syft/syft/cpe"
-	"github.com/anchore/syft/syft/file"
-	"github.com/anchore/syft/syft/pkg"
-	"github.com/anchore/syft/syft/pkg/cataloger/internal/unionreader"
+	"github.com/gsoc2/syft/internal"
+	"github.com/gsoc2/syft/internal/log"
+	"github.com/gsoc2/syft/syft/cpe"
+	"github.com/gsoc2/syft/syft/file"
+	"github.com/gsoc2/syft/syft/pkg"
+	"github.com/gsoc2/syft/syft/pkg/cataloger/internal/unionreader"
 )
 
 var emptyPURL = packageurl.PackageURL{}

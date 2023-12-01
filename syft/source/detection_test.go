@@ -249,23 +249,23 @@ func Test_Detect(t *testing.T) {
 		},
 		{
 			name:      "podman-image",
-			userInput: "containerd:anchore/syft",
+			userInput: "containerd:gsoc2/syft",
 			detection: detectorResult{
 				src: image.PodmanDaemonSource,
-				ref: "anchore/syft",
+				ref: "gsoc2/syft",
 			},
 			expectedScheme:   containerImageType,
-			expectedLocation: "anchore/syft",
+			expectedLocation: "gsoc2/syft",
 		},
 		{
 			name:      "containerd-image",
-			userInput: "containerd:anchore/syft",
+			userInput: "containerd:gsoc2/syft",
 			detection: detectorResult{
 				src: image.ContainerdDaemonSource,
-				ref: "anchore/syft",
+				ref: "gsoc2/syft",
 			},
 			expectedScheme:   containerImageType,
-			expectedLocation: "anchore/syft",
+			expectedLocation: "gsoc2/syft",
 		},
 	}
 	for _, test := range testCases {

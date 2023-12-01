@@ -20,13 +20,13 @@ import (
 	"github.com/go-git/go-git/v5/storage/memory"
 	"github.com/scylladb/go-set/strset"
 
-	"github.com/anchore/syft/internal/bus"
-	"github.com/anchore/syft/internal/licenses"
-	"github.com/anchore/syft/internal/log"
-	"github.com/anchore/syft/syft/event/monitor"
-	"github.com/anchore/syft/syft/file"
-	"github.com/anchore/syft/syft/internal/fileresolver"
-	"github.com/anchore/syft/syft/pkg"
+	"github.com/gsoc2/syft/internal/bus"
+	"github.com/gsoc2/syft/internal/licenses"
+	"github.com/gsoc2/syft/internal/log"
+	"github.com/gsoc2/syft/syft/event/monitor"
+	"github.com/gsoc2/syft/syft/file"
+	"github.com/gsoc2/syft/syft/internal/fileresolver"
+	"github.com/gsoc2/syft/syft/pkg"
 )
 
 type goLicenses struct {

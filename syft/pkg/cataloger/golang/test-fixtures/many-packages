@@ -1,5 +1,5 @@
 module (
-    github.com/anchore/syft
+    github.com/gsoc2/syft
 )
 
 go 1.14

@@ -4,8 +4,8 @@ Package dotnet provides a concrete Cataloger implementation relating to packages
 package dotnet
 
 import (
-	"github.com/anchore/syft/syft/pkg"
-	"github.com/anchore/syft/syft/pkg/cataloger/generic"
+	"github.com/gsoc2/syft/syft/pkg"
+	"github.com/gsoc2/syft/syft/pkg/cataloger/generic"
 )
 
 // NewDotnetDepsCataloger returns a new Dotnet cataloger object base on deps json files.

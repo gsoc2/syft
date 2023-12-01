@@ -9,7 +9,7 @@ import (
 	"github.com/anchore/bubbly"
 	"github.com/anchore/bubbly/bubbles/taskprogress"
 	stereoscopeEvent "github.com/anchore/stereoscope/pkg/event"
-	syftEvent "github.com/anchore/syft/syft/event"
+	syftEvent "github.com/gsoc2/syft/syft/event"
 )
 
 var _ interface {

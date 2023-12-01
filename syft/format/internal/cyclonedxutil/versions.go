@@ -5,7 +5,7 @@ import (
 
 	"github.com/CycloneDX/cyclonedx-go"
 
-	"github.com/anchore/syft/syft/sbom"
+	"github.com/gsoc2/syft/syft/sbom"
 )
 
 const (

@@ -10,7 +10,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/anchore/syft/syft/sbom"
+	"github.com/gsoc2/syft/syft/sbom"
 )
 
 func TestDecoder_Decode(t *testing.T) {

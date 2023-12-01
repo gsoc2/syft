@@ -4,9 +4,9 @@ import (
 	"math/rand"
 	"time"
 
-	"github.com/anchore/syft/syft/artifact"
-	"github.com/anchore/syft/syft/file"
-	"github.com/anchore/syft/syft/sbom"
+	"github.com/gsoc2/syft/syft/artifact"
+	"github.com/gsoc2/syft/syft/file"
+	"github.com/gsoc2/syft/syft/sbom"
 )
 
 //nolint:gosec

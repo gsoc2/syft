@@ -6,12 +6,12 @@ import (
 	"github.com/CycloneDX/cyclonedx-go"
 
 	"github.com/anchore/packageurl-go"
-	"github.com/anchore/syft/syft/artifact"
-	"github.com/anchore/syft/syft/format/common"
-	"github.com/anchore/syft/syft/linux"
-	"github.com/anchore/syft/syft/pkg"
-	"github.com/anchore/syft/syft/sbom"
-	"github.com/anchore/syft/syft/source"
+	"github.com/gsoc2/syft/syft/artifact"
+	"github.com/gsoc2/syft/syft/format/common"
+	"github.com/gsoc2/syft/syft/linux"
+	"github.com/gsoc2/syft/syft/pkg"
+	"github.com/gsoc2/syft/syft/sbom"
+	"github.com/gsoc2/syft/syft/source"
 )
 
 func ToSyftModel(bom *cyclonedx.BOM) (*sbom.SBOM, error) {

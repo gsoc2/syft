@@ -7,10 +7,10 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/anchore/syft/syft/artifact"
-	"github.com/anchore/syft/syft/file"
-	"github.com/anchore/syft/syft/pkg"
-	"github.com/anchore/syft/syft/pkg/cataloger/internal/pkgtest"
+	"github.com/gsoc2/syft/syft/artifact"
+	"github.com/gsoc2/syft/syft/file"
+	"github.com/gsoc2/syft/syft/pkg"
+	"github.com/gsoc2/syft/syft/pkg/cataloger/internal/pkgtest"
 )
 
 func TestParsePackageResolved(t *testing.T) {
@@ -81,7 +81,7 @@ func TestParsePackageResolved(t *testing.T) {
 }
 
 func TestParsePackageResolved_empty(t *testing.T) {
-	// regression for https://github.com/anchore/syft/issues/2225
+	// regression for https://github.com/gsoc2/syft/issues/2225
 	fixture := "test-fixtures/empty-packages.resolved"
 
 	pkgtest.TestFileParser(t, fixture, parsePackageResolved, nil, nil)
@@ -95,7 +95,7 @@ func TestParsePackageResolved_empty(t *testing.T) {
 }
 
 func TestParsePackageResolved_versionNotANumber(t *testing.T) {
-	// regression for https://github.com/anchore/syft/issues/2225
+	// regression for https://github.com/gsoc2/syft/issues/2225
 	fixture := "test-fixtures/bad-version-packages.resolved"
 
 	pkgtest.NewCatalogTester().FromFile(t, fixture).WithError().TestParser(t, parsePackageResolved)

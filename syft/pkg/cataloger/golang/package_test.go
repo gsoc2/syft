@@ -5,7 +5,7 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"github.com/anchore/syft/syft/pkg"
+	"github.com/gsoc2/syft/syft/pkg"
 )
 
 func Test_packageURL(t *testing.T) {
@@ -18,10 +18,10 @@ func Test_packageURL(t *testing.T) {
 		{
 			name: "gocase",
 			pkg: pkg.Package{
-				Name:    "github.com/anchore/syft",
+				Name:    "github.com/gsoc2/syft",
 				Version: "v0.1.0",
 			},
-			expected: "pkg:golang/github.com/anchore/syft@v0.1.0",
+			expected: "pkg:golang/github.com/gsoc2/syft@v0.1.0",
 		},
 		{
 			name: "golang short name",

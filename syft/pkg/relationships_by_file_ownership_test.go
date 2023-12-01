@@ -5,8 +5,8 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"github.com/anchore/syft/syft/artifact"
-	"github.com/anchore/syft/syft/file"
+	"github.com/gsoc2/syft/syft/artifact"
+	"github.com/gsoc2/syft/syft/file"
 )
 
 func TestOwnershipByFilesRelationship(t *testing.T) {

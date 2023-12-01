@@ -1,8 +1,8 @@
 package binary
 
 import (
-	"github.com/anchore/syft/syft/cpe"
-	"github.com/anchore/syft/syft/pkg"
+	"github.com/gsoc2/syft/syft/cpe"
+	"github.com/gsoc2/syft/syft/pkg"
 )
 
 var defaultClassifiers = []classifier{

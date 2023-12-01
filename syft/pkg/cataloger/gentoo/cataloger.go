@@ -4,8 +4,8 @@ Package gentoo provides a concrete Cataloger implementation related to packages 
 package gentoo
 
 import (
-	"github.com/anchore/syft/syft/pkg"
-	"github.com/anchore/syft/syft/pkg/cataloger/generic"
+	"github.com/gsoc2/syft/syft/pkg"
+	"github.com/gsoc2/syft/syft/pkg/cataloger/generic"
 )
 
 // NewPortageCataloger returns a new cataloger object initialized for Gentoo Portage package manager files (a flat-file store).

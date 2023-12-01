@@ -13,9 +13,9 @@ import (
 
 	stereoscopeFile "github.com/anchore/stereoscope/pkg/file"
 	"github.com/anchore/stereoscope/pkg/imagetest"
-	intFile "github.com/anchore/syft/internal/file"
-	"github.com/anchore/syft/syft/file"
-	"github.com/anchore/syft/syft/source"
+	intFile "github.com/gsoc2/syft/internal/file"
+	"github.com/gsoc2/syft/syft/file"
+	"github.com/gsoc2/syft/syft/source"
 )
 
 func testDigests(t testing.TB, root string, files []string, hashes ...crypto.Hash) map[file.Coordinates][]file.Digest {

@@ -13,9 +13,9 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"github.com/anchore/clio"
-	"github.com/anchore/syft/cmd/syft/cli/options"
-	"github.com/anchore/syft/syft/sbom"
-	"github.com/anchore/syft/syft/source"
+	"github.com/gsoc2/syft/cmd/syft/cli/options"
+	"github.com/gsoc2/syft/syft/sbom"
+	"github.com/gsoc2/syft/syft/source"
 )
 
 func Test_writeSBOMToFormattedFile(t *testing.T) {

@@ -8,7 +8,7 @@ import (
 
 	"github.com/olekukonko/tablewriter"
 
-	"github.com/anchore/syft/syft/sbom"
+	"github.com/gsoc2/syft/syft/sbom"
 )
 
 const ID sbom.FormatID = "syft-table"

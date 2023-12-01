@@ -5,8 +5,8 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/anchore/syft/syft/cpe"
-	"github.com/anchore/syft/syft/file"
+	"github.com/gsoc2/syft/syft/cpe"
+	"github.com/gsoc2/syft/syft/file"
 )
 
 func Test_ClassifierCPEs(t *testing.T) {

@@ -6,9 +6,9 @@ import (
 	"strings"
 
 	"github.com/anchore/packageurl-go"
-	"github.com/anchore/syft/internal/log"
-	"github.com/anchore/syft/syft/file"
-	"github.com/anchore/syft/syft/pkg"
+	"github.com/gsoc2/syft/internal/log"
+	"github.com/gsoc2/syft/syft/file"
+	"github.com/gsoc2/syft/syft/pkg"
 )
 
 func (c *goBinaryCataloger) newGoBinaryPackage(resolver file.Resolver, dep *debug.Module, mainModule, goVersion, architecture string, buildSettings map[string]string, cryptoSettings []string, locations ...file.Location) pkg.Package {

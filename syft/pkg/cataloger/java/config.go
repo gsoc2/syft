@@ -1,6 +1,6 @@
 package java
 
-import "github.com/anchore/syft/syft/cataloging"
+import "github.com/gsoc2/syft/syft/cataloging"
 
 const mavenBaseURL = "https://repo1.maven.org/maven2"
 

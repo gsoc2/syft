@@ -8,16 +8,16 @@ import (
 
 	"github.com/anchore/clio"
 	"github.com/anchore/stereoscope/pkg/image"
-	"github.com/anchore/syft/cmd/syft/cli/eventloop"
-	"github.com/anchore/syft/cmd/syft/cli/options"
-	"github.com/anchore/syft/cmd/syft/internal/ui"
-	"github.com/anchore/syft/internal"
-	"github.com/anchore/syft/internal/bus"
-	"github.com/anchore/syft/internal/file"
-	"github.com/anchore/syft/internal/log"
-	"github.com/anchore/syft/syft/artifact"
-	"github.com/anchore/syft/syft/sbom"
-	"github.com/anchore/syft/syft/source"
+	"github.com/gsoc2/syft/cmd/syft/cli/eventloop"
+	"github.com/gsoc2/syft/cmd/syft/cli/options"
+	"github.com/gsoc2/syft/cmd/syft/internal/ui"
+	"github.com/gsoc2/syft/internal"
+	"github.com/gsoc2/syft/internal/bus"
+	"github.com/gsoc2/syft/internal/file"
+	"github.com/gsoc2/syft/internal/log"
+	"github.com/gsoc2/syft/syft/artifact"
+	"github.com/gsoc2/syft/syft/sbom"
+	"github.com/gsoc2/syft/syft/source"
 )
 
 const (

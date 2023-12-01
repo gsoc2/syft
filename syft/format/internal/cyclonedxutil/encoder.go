@@ -5,8 +5,8 @@ import (
 
 	"github.com/CycloneDX/cyclonedx-go"
 
-	"github.com/anchore/syft/syft/format/common/cyclonedxhelpers"
-	"github.com/anchore/syft/syft/sbom"
+	"github.com/gsoc2/syft/syft/format/common/cyclonedxhelpers"
+	"github.com/gsoc2/syft/syft/sbom"
 )
 
 const DefaultVersion = "1.5"

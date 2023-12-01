@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/anchore/syft/syft/pkg"
+	"github.com/gsoc2/syft/syft/pkg"
 )
 
 func encodeAuthor(p pkg.Package) string {

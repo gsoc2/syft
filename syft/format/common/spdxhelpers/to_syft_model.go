@@ -13,17 +13,17 @@ import (
 	"github.com/spdx/tools-golang/spdx/v2/common"
 
 	"github.com/anchore/packageurl-go"
-	"github.com/anchore/syft/internal/log"
-	"github.com/anchore/syft/internal/spdxlicense"
-	"github.com/anchore/syft/syft/artifact"
-	"github.com/anchore/syft/syft/cpe"
-	"github.com/anchore/syft/syft/file"
-	"github.com/anchore/syft/syft/format/common/util"
-	"github.com/anchore/syft/syft/license"
-	"github.com/anchore/syft/syft/linux"
-	"github.com/anchore/syft/syft/pkg"
-	"github.com/anchore/syft/syft/sbom"
-	"github.com/anchore/syft/syft/source"
+	"github.com/gsoc2/syft/internal/log"
+	"github.com/gsoc2/syft/internal/spdxlicense"
+	"github.com/gsoc2/syft/syft/artifact"
+	"github.com/gsoc2/syft/syft/cpe"
+	"github.com/gsoc2/syft/syft/file"
+	"github.com/gsoc2/syft/syft/format/common/util"
+	"github.com/gsoc2/syft/syft/license"
+	"github.com/gsoc2/syft/syft/linux"
+	"github.com/gsoc2/syft/syft/pkg"
+	"github.com/gsoc2/syft/syft/sbom"
+	"github.com/gsoc2/syft/syft/source"
 )
 
 func ToSyftModel(doc *spdx.Document) (*sbom.SBOM, error) {

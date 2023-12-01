@@ -8,10 +8,10 @@ import (
 
 	"github.com/Masterminds/semver"
 
-	"github.com/anchore/syft/internal"
-	"github.com/anchore/syft/internal/log"
-	"github.com/anchore/syft/syft/format/syftjson/model"
-	"github.com/anchore/syft/syft/sbom"
+	"github.com/gsoc2/syft/internal"
+	"github.com/gsoc2/syft/internal/log"
+	"github.com/gsoc2/syft/syft/format/syftjson/model"
+	"github.com/gsoc2/syft/syft/sbom"
 )
 
 var _ sbom.FormatDecoder = (*decoder)(nil)
@@ -74,7 +74,7 @@ func (d decoder) Identify(reader io.ReadSeeker) (sbom.FormatID, string) {
 		return "", ""
 	}
 
-	if !strings.Contains(doc.Schema.URL, "anchore/syft") {
+	if !strings.Contains(doc.Schema.URL, "gsoc2/syft") {
 		// not a syft-json document
 		return "", ""
 	}

@@ -1,7 +1,7 @@
 package cataloger
 
 import (
-	"github.com/anchore/syft/syft/source"
+	"github.com/gsoc2/syft/syft/source"
 )
 
 type SearchConfig struct {

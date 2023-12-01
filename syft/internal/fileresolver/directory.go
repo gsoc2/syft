@@ -8,9 +8,9 @@ import (
 
 	stereoscopeFile "github.com/anchore/stereoscope/pkg/file"
 	"github.com/anchore/stereoscope/pkg/filetree"
-	"github.com/anchore/syft/internal/log"
-	"github.com/anchore/syft/syft/file"
-	"github.com/anchore/syft/syft/internal/windows"
+	"github.com/gsoc2/syft/internal/log"
+	"github.com/gsoc2/syft/syft/file"
+	"github.com/gsoc2/syft/syft/internal/windows"
 )
 
 var unixSystemRuntimePrefixes = []string{

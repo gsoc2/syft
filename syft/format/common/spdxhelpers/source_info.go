@@ -3,7 +3,7 @@ package spdxhelpers
 import (
 	"strings"
 
-	"github.com/anchore/syft/syft/pkg"
+	"github.com/gsoc2/syft/syft/pkg"
 )
 
 //nolint:funlen

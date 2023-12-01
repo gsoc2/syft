@@ -6,7 +6,7 @@ import (
 
 	"github.com/scylladb/go-set/strset"
 
-	"github.com/anchore/syft/syft/file"
+	"github.com/gsoc2/syft/syft/file"
 )
 
 var _ FileOwner = (*AlpmDBEntry)(nil)

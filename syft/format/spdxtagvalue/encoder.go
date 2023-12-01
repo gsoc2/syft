@@ -10,9 +10,9 @@ import (
 	"github.com/spdx/tools-golang/spdx/v2/v2_3"
 	"github.com/spdx/tools-golang/tagvalue"
 
-	"github.com/anchore/syft/syft/format/common/spdxhelpers"
-	"github.com/anchore/syft/syft/format/internal/spdxutil"
-	"github.com/anchore/syft/syft/sbom"
+	"github.com/gsoc2/syft/syft/format/common/spdxhelpers"
+	"github.com/gsoc2/syft/syft/format/internal/spdxutil"
+	"github.com/gsoc2/syft/syft/sbom"
 )
 
 const ID = spdxutil.TagValueFormatID

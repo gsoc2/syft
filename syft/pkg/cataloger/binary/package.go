@@ -3,9 +3,9 @@ package binary
 import (
 	"reflect"
 
-	"github.com/anchore/syft/syft/cpe"
-	"github.com/anchore/syft/syft/file"
-	"github.com/anchore/syft/syft/pkg"
+	"github.com/gsoc2/syft/syft/cpe"
+	"github.com/gsoc2/syft/syft/file"
+	"github.com/gsoc2/syft/syft/pkg"
 )
 
 func newPackage(classifier classifier, location file.Location, matchMetadata map[string]string) *pkg.Package {

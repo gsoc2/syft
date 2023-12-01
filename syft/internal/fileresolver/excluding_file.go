@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/anchore/syft/syft/file"
+	"github.com/gsoc2/syft/syft/file"
 )
 
 type excludeFn func(string) bool

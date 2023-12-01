@@ -4,8 +4,8 @@ Package php provides a concrete Cataloger implementation relating to packages wi
 package php
 
 import (
-	"github.com/anchore/syft/syft/pkg"
-	"github.com/anchore/syft/syft/pkg/cataloger/generic"
+	"github.com/gsoc2/syft/syft/pkg"
+	"github.com/gsoc2/syft/syft/pkg/cataloger/generic"
 )
 
 // Note about the distinction between composer.lock and installed.json: composer.lock and installed.json have different

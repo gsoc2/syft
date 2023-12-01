@@ -4,8 +4,8 @@ Package javascript provides a concrete Cataloger implementation for packages rel
 package javascript
 
 import (
-	"github.com/anchore/syft/syft/pkg"
-	"github.com/anchore/syft/syft/pkg/cataloger/generic"
+	"github.com/gsoc2/syft/syft/pkg"
+	"github.com/gsoc2/syft/syft/pkg/cataloger/generic"
 )
 
 // NewPackageCataloger returns a new cataloger object for NPM.

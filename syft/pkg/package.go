@@ -8,10 +8,10 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/anchore/syft/internal/log"
-	"github.com/anchore/syft/syft/artifact"
-	"github.com/anchore/syft/syft/cpe"
-	"github.com/anchore/syft/syft/file"
+	"github.com/gsoc2/syft/internal/log"
+	"github.com/gsoc2/syft/syft/artifact"
+	"github.com/gsoc2/syft/syft/cpe"
+	"github.com/gsoc2/syft/syft/file"
 )
 
 // Package represents an application or library that has been bundled into a distributable format.

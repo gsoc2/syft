@@ -6,9 +6,9 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/anchore/syft/cmd/syft/cli/options"
-	"github.com/anchore/syft/syft/format"
-	"github.com/anchore/syft/syft/format/template"
+	"github.com/gsoc2/syft/cmd/syft/cli/options"
+	"github.com/gsoc2/syft/syft/format"
+	"github.com/gsoc2/syft/syft/format/template"
 )
 
 func TestAllFormatsExpressible(t *testing.T) {

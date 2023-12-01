@@ -4,8 +4,8 @@ import (
 	_ "modernc.org/sqlite"
 
 	"github.com/anchore/clio"
-	"github.com/anchore/syft/cmd/syft/cli"
-	"github.com/anchore/syft/cmd/syft/internal"
+	"github.com/gsoc2/syft/cmd/syft/cli"
+	"github.com/gsoc2/syft/cmd/syft/internal"
 )
 
 // applicationName is the non-capitalized name of the application (do not change this)

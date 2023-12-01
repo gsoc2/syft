@@ -6,8 +6,8 @@ import (
 	"github.com/jinzhu/copier"
 	"github.com/scylladb/go-set/strset"
 
-	"github.com/anchore/syft/internal/log"
-	"github.com/anchore/syft/syft/artifact"
+	"github.com/gsoc2/syft/internal/log"
+	"github.com/gsoc2/syft/syft/artifact"
 )
 
 // Collection represents a collection of Packages.

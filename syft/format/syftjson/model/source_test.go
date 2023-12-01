@@ -8,9 +8,9 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/anchore/syft/syft/file"
-	"github.com/anchore/syft/syft/internal/sourcemetadata"
-	"github.com/anchore/syft/syft/source"
+	"github.com/gsoc2/syft/syft/file"
+	"github.com/gsoc2/syft/syft/internal/sourcemetadata"
+	"github.com/gsoc2/syft/syft/source"
 )
 
 func TestSource_UnmarshalJSON(t *testing.T) {

@@ -3,8 +3,8 @@ package file
 import (
 	"fmt"
 
-	"github.com/anchore/syft/internal/log"
-	"github.com/anchore/syft/syft/artifact"
+	"github.com/gsoc2/syft/internal/log"
+	"github.com/gsoc2/syft/syft/artifact"
 )
 
 // Coordinates contains the minimal information needed to describe how to find a file within any possible source object (e.g. image and directory sources)

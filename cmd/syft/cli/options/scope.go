@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"github.com/anchore/clio"
-	"github.com/anchore/syft/syft/source"
+	"github.com/gsoc2/syft/syft/source"
 )
 
 type scope struct {

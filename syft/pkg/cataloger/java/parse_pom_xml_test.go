@@ -11,10 +11,10 @@ import (
 	"github.com/stretchr/testify/require"
 	"github.com/vifraa/gopom"
 
-	"github.com/anchore/syft/syft/file"
-	"github.com/anchore/syft/syft/license"
-	"github.com/anchore/syft/syft/pkg"
-	"github.com/anchore/syft/syft/pkg/cataloger/internal/pkgtest"
+	"github.com/gsoc2/syft/syft/file"
+	"github.com/gsoc2/syft/syft/license"
+	"github.com/gsoc2/syft/syft/pkg"
+	"github.com/gsoc2/syft/syft/pkg/cataloger/internal/pkgtest"
 )
 
 func Test_parserPomXML(t *testing.T) {
@@ -67,7 +67,7 @@ func Test_parserPomXML(t *testing.T) {
 }
 
 func Test_decodePomXML_surviveNonUtf8Encoding(t *testing.T) {
-	// regression for https://github.com/anchore/syft/issues/2044
+	// regression for https://github.com/gsoc2/syft/issues/2044
 
 	// we are storing the base64 contents of the pom.xml file. We are doing this to prevent accidental changes to the
 	// file, which is extremely important for this test.
@@ -327,7 +327,7 @@ func Test_parsePomXMLProject(t *testing.T) {
 				Licenses: []pkg.License{
 					{
 						Value:          "The Apache Software License, Version 2.0",
-						SPDXExpression: "", // TODO: ideally we would parse this title to get Apache-2.0 (created issue #2210 https://github.com/anchore/syft/issues/2210)
+						SPDXExpression: "", // TODO: ideally we would parse this title to get Apache-2.0 (created issue #2210 https://github.com/gsoc2/syft/issues/2210)
 						Type:           license.Declared,
 						URLs:           []string{"http://www.apache.org/licenses/LICENSE-2.0.txt"},
 						Locations:      file.NewLocationSet(jarLocation),

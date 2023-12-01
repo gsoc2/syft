@@ -8,7 +8,7 @@ import (
 	"github.com/go-test/deep"
 	"github.com/stretchr/testify/assert"
 
-	"github.com/anchore/syft/syft/pkg"
+	"github.com/gsoc2/syft/syft/pkg"
 )
 
 func TestParseJavaManifest(t *testing.T) {
@@ -103,7 +103,7 @@ func TestParseJavaManifest(t *testing.T) {
 		},
 		{
 			// regression test, we should not trim space and choke of empty space
-			// https://github.com/anchore/syft/issues/2179
+			// https://github.com/gsoc2/syft/issues/2179
 			fixture: "test-fixtures/manifest/leading-space",
 			expected: pkg.JavaManifest{
 				Main: map[string]string{

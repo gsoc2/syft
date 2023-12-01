@@ -10,14 +10,14 @@ import (
 	"github.com/hashicorp/go-multierror"
 	"github.com/wagoodman/go-progress"
 
-	"github.com/anchore/syft/internal/bus"
-	"github.com/anchore/syft/internal/log"
-	"github.com/anchore/syft/syft/artifact"
-	"github.com/anchore/syft/syft/event/monitor"
-	"github.com/anchore/syft/syft/file"
-	"github.com/anchore/syft/syft/linux"
-	"github.com/anchore/syft/syft/pkg"
-	"github.com/anchore/syft/syft/pkg/cataloger/common/cpe"
+	"github.com/gsoc2/syft/internal/bus"
+	"github.com/gsoc2/syft/internal/log"
+	"github.com/gsoc2/syft/syft/artifact"
+	"github.com/gsoc2/syft/syft/event/monitor"
+	"github.com/gsoc2/syft/syft/file"
+	"github.com/gsoc2/syft/syft/linux"
+	"github.com/gsoc2/syft/syft/pkg"
+	"github.com/gsoc2/syft/syft/pkg/cataloger/common/cpe"
 )
 
 // Monitor provides progress-related data for observing the progress of a Catalog() call (published on the event bus).

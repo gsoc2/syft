@@ -22,13 +22,13 @@ import (
 	"github.com/wagoodman/go-partybus"
 
 	"github.com/anchore/go-logger"
-	"github.com/anchore/syft/internal/bus"
-	"github.com/anchore/syft/internal/log"
-	"github.com/anchore/syft/syft/artifact"
-	"github.com/anchore/syft/syft/linux"
-	"github.com/anchore/syft/syft/pkg"
-	"github.com/anchore/syft/syft/pkg/cataloger"
-	"github.com/anchore/syft/syft/source"
+	"github.com/gsoc2/syft/internal/bus"
+	"github.com/gsoc2/syft/internal/log"
+	"github.com/gsoc2/syft/syft/artifact"
+	"github.com/gsoc2/syft/syft/linux"
+	"github.com/gsoc2/syft/syft/pkg"
+	"github.com/gsoc2/syft/syft/pkg/cataloger"
+	"github.com/gsoc2/syft/syft/source"
 )
 
 // CatalogPackages takes an inventory of packages from the given image from a particular perspective
@@ -76,7 +76,7 @@ func CatalogPackages(src source.Source, cfg cataloger.Config) (*pkg.Collection, 
 
 	// apply exclusions to the package catalog
 	// default config value for this is true
-	// https://github.com/anchore/syft/issues/931
+	// https://github.com/gsoc2/syft/issues/931
 	if cfg.ExcludeBinaryOverlapByOwnership {
 		for _, r := range relationships {
 			if cataloger.ExcludeBinaryByFileOwnershipOverlap(r, catalog) {

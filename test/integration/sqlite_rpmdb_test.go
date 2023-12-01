@@ -5,12 +5,12 @@ import (
 
 	_ "modernc.org/sqlite"
 
-	"github.com/anchore/syft/syft/pkg"
-	"github.com/anchore/syft/syft/source"
+	"github.com/gsoc2/syft/syft/pkg"
+	"github.com/gsoc2/syft/syft/source"
 )
 
 func TestSqliteRpm(t *testing.T) {
-	// This is a regression test for issue #469 (https://github.com/anchore/syft/issues/469). Recent RPM
+	// This is a regression test for issue #469 (https://github.com/gsoc2/syft/issues/469). Recent RPM
 	// based distribution store package data in an sqlite database
 	sbom, _ := catalogFixtureImage(t, "image-sqlite-rpmdb", source.SquashedScope, nil)
 

@@ -4,7 +4,7 @@ import (
 	"reflect"
 	"strings"
 
-	"github.com/anchore/syft/syft/pkg"
+	"github.com/gsoc2/syft/syft/pkg"
 )
 
 type jsonType struct {

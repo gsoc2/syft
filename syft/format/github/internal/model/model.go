@@ -8,10 +8,10 @@ import (
 	"github.com/mholt/archiver/v3"
 
 	"github.com/anchore/packageurl-go"
-	"github.com/anchore/syft/internal/log"
-	"github.com/anchore/syft/syft/pkg"
-	"github.com/anchore/syft/syft/sbom"
-	"github.com/anchore/syft/syft/source"
+	"github.com/gsoc2/syft/internal/log"
+	"github.com/gsoc2/syft/syft/pkg"
+	"github.com/gsoc2/syft/syft/sbom"
+	"github.com/gsoc2/syft/syft/source"
 )
 
 // ToGithubModel converts the provided SBOM to a GitHub dependency model
@@ -26,7 +26,7 @@ func ToGithubModel(s *sbom.SBOM) DependencySnapshot {
 		// TODO allow property input to specify the Job, Sha, and Ref
 		Detector: DetectorMetadata{
 			Name:    s.Descriptor.Name,
-			URL:     "https://github.com/anchore/syft",
+			URL:     "https://github.com/gsoc2/syft",
 			Version: v,
 		},
 		Metadata:  toSnapshotMetadata(s),

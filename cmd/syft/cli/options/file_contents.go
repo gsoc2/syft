@@ -1,8 +1,8 @@
 package options
 
 import (
-	"github.com/anchore/syft/internal/file"
-	"github.com/anchore/syft/syft/source"
+	"github.com/gsoc2/syft/internal/file"
+	"github.com/gsoc2/syft/syft/source"
 )
 
 type fileContents struct {

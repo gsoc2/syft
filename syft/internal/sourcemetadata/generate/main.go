@@ -6,13 +6,13 @@ import (
 
 	"github.com/dave/jennifer/jen"
 
-	"github.com/anchore/syft/syft/internal/sourcemetadata"
+	"github.com/gsoc2/syft/syft/internal/sourcemetadata"
 )
 
 // This program is invoked from syft/internal and generates sourcemetadata/generated.go
 
 const (
-	srcImport = "github.com/anchore/syft/syft/source"
+	srcImport = "github.com/gsoc2/syft/syft/source"
 	path      = "sourcemetadata/generated.go"
 )
 

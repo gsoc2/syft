@@ -9,8 +9,8 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"github.com/anchore/stereoscope/pkg/imagetest"
-	"github.com/anchore/syft/syft/file"
-	"github.com/anchore/syft/syft/source"
+	"github.com/gsoc2/syft/syft/file"
+	"github.com/gsoc2/syft/syft/source"
 )
 
 func Test_allRegularFiles(t *testing.T) {

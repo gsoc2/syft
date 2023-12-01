@@ -3,8 +3,8 @@ package githubactions
 import (
 	"testing"
 
-	"github.com/anchore/syft/syft/pkg"
-	"github.com/anchore/syft/syft/pkg/cataloger/internal/pkgtest"
+	"github.com/gsoc2/syft/syft/pkg"
+	"github.com/gsoc2/syft/syft/pkg/cataloger/internal/pkgtest"
 )
 
 func TestCataloger_Globs(t *testing.T) {

@@ -5,10 +5,10 @@ import (
 
 	"github.com/dustin/go-humanize"
 
-	"github.com/anchore/syft/internal/bus"
-	"github.com/anchore/syft/internal/log"
-	"github.com/anchore/syft/syft/event/monitor"
-	"github.com/anchore/syft/syft/file"
+	"github.com/gsoc2/syft/internal/bus"
+	"github.com/gsoc2/syft/internal/log"
+	"github.com/gsoc2/syft/syft/event/monitor"
+	"github.com/gsoc2/syft/syft/file"
 )
 
 type Cataloger struct {

@@ -4,8 +4,8 @@ Package r provides a concrete Cataloger implementation relating to packages with
 package r
 
 import (
-	"github.com/anchore/syft/syft/pkg"
-	"github.com/anchore/syft/syft/pkg/cataloger/generic"
+	"github.com/gsoc2/syft/syft/pkg"
+	"github.com/gsoc2/syft/syft/pkg/cataloger/generic"
 )
 
 // NewPackageCataloger returns a new R cataloger object based on detection of R package DESCRIPTION files.
