@@ -32,8 +32,8 @@ jobs:
       - name: Update Homebrew formula
         uses: dawidd6/action-homebrew-bump-formula@d3667e5ae14df19579e4414897498e3e88f2f458 # v3.10.0
         with:
-          token: ${{ secrets.HOMEBREW_TOKEN }}
-          org: anchore
+          token: ${{ secrets.GITHUB_TOKEN }}
+          org: gsoc2
           formula: syft
           tag: ${{ steps.release_info.outputs.tag_name }}
           revision: ${{ steps.git_info.outputs.commit }}
